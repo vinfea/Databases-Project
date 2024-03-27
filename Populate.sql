@@ -782,107 +782,159 @@ INSERT INTO customer (SSN, name, address, registration_date) VALUES
 
 -- Populate booking_renting table 
 INSERT INTO booking_renting (booking_id, room_num, hotel_id, chain, customer_SSN, is_renting) VALUES
-(1, 3, 2, 'Grand Hotels', '234567890', 'active'),
-(2, 2, 1, 'Royal Resorts', '345678901', 'renting'),
-(3, 4, 3, 'Ritz-Carlton', '456789012', 'cancelled'),
-(4, 1, 4, 'Independence Inn', '567890123', 'archived'),
-(5, 5, 2, 'Grand Hotels', '678901234', 'active'),
-(6, 3, 3, 'Royal Resorts', '789012345', 'renting'),
-(7, 2, 1, 'Ritz-Carlton', '890123456', 'cancelled'),
-(8, 4, 4, 'Independence Inn', '901234567', 'archived'),
-(9, 1, 2, 'Dragonfly Inn', '012345678', 'active'),
-(10, 5, 3, 'Grand Hotels', '098765432', 'renting'),
-(11, 3, 4, 'Royal Resorts', '987654321', 'cancelled'),
-(12, 2, 1, 'Independence Inn', '876543210', 'archived'),
-(13, 4, 2, 'Grand Hotels', '765432109', 'active'),
-(14, 1, 3, 'Ritz-Carlton', '654321098', 'renting'),
-(15, 5, 4, 'Dragonfly Inn', '543210987', 'cancelled'),
-(16, 3, 2, 'Royal Resorts', '432109876', 'archived'),
-(17, 2, 1, 'Grand Hotels', '321098765', 'active'),
-(18, 4, 3, 'Independence Inn', '210987654', 'renting'),
-(19, 1, 4, 'Ritz-Carlton', '109876543', 'cancelled'),
-(20, 5, 2, 'Dragonfly Inn', '001234567', 'archived');
+-- Grand Hotels
+(1, 2, 1, 'Grand Hotels', '345678901', 'active'),
+(2, 4, 1, 'Grand Hotels', '456789012', 'active'),
+(3, 1, 2, 'Grand Hotels', '567890123', 'active'),
+(4, 3, 2, 'Grand Hotels', '678901234', 'active'),
+(5, 5, 3, 'Grand Hotels', '789012345', 'active'),
+(6, 2, 3, 'Grand Hotels', '890123456', 'active'),
+(7, 4, 4, 'Grand Hotels', '901234567', 'active'),
+(8, 1, 4, 'Grand Hotels', '012345678', 'active'),
+(9, 3, 5, 'Grand Hotels', '098765432', 'active'),
+(10, 5, 5, 'Grand Hotels', '987654321', 'active'),
+(11, 2, 6, 'Grand Hotels', '876543210', 'active'),
+(12, 4, 6, 'Grand Hotels', '765432109', 'active'),
+(13, 1, 7, 'Grand Hotels', '654321098', 'active'),
+(14, 3, 7, 'Grand Hotels', '543210987', 'active'),
+(15, 5, 8, 'Grand Hotels', '432109876', 'active'),
+(16, 2, 8, 'Grand Hotels', '321098765', 'active'),
+
+-- Royal Resorts
+(1, 4, 1, 'Royal Resorts', '210987654', 'active'),
+(2, 1, 1, 'Royal Resorts', '109876543', 'active'),
+(3, 3, 2, 'Royal Resorts', '001234567', 'active'),
+(4, 5, 2, 'Royal Resorts', '002345678', 'active'),
+(5, 2, 3, 'Royal Resorts', '003456789', 'active'),
+(6, 4, 3, 'Royal Resorts', '004567890', 'active'),
+(7, 1, 4, 'Royal Resorts', '005678901', 'active'),
+(8, 3, 4, 'Royal Resorts', '006789012', 'active'),
+(9, 5, 5, 'Royal Resorts', '007890123', 'active'),
+(10, 2, 5, 'Royal Resorts', '008901234', 'active'),
+(11, 4, 6, 'Royal Resorts', '009012345', 'active'),
+(12, 1, 6, 'Royal Resorts', '100123456', 'active'),
+(13, 3, 7, 'Royal Resorts', '123456789', 'active'),
+(14, 5, 7, 'Royal Resorts', '234567890', 'active'),
+(15, 2, 8, 'Royal Resorts', '345678901', 'active'),
+(16, 4, 8, 'Royal Resorts', '456789012', 'active'),
+
+-- Ritz-Carlton
+(1, 2, 1, 'Ritz-Carlton', '345678901', 'active'),
+(2, 4, 1, 'Ritz-Carlton', '456789012', 'active'),
+(3, 1, 2, 'Ritz-Carlton', '567890123', 'active'),
+(4, 3, 2, 'Ritz-Carlton', '678901234', 'active'),
+(5, 5, 3, 'Ritz-Carlton', '789012345', 'active'),
+(6, 2, 3, 'Ritz-Carlton', '890123456', 'active'),
+(7, 4, 4, 'Ritz-Carlton', '901234567', 'active'),
+(8, 1, 4, 'Ritz-Carlton', '012345678', 'active'),
+(9, 3, 5, 'Ritz-Carlton', '098765432', 'active'),
+(10, 5, 5, 'Ritz-Carlton', '987654321', 'active'),
+(11, 2, 6, 'Ritz-Carlton', '876543210', 'active'),
+(12, 4, 6, 'Ritz-Carlton', '765432109', 'active'),
+(13, 1, 7, 'Ritz-Carlton', '654321098', 'active'),
+(14, 3, 7, 'Ritz-Carlton', '543210987', 'active'),
+(15, 5, 8, 'Ritz-Carlton', '432109876', 'active'),
+(16, 2, 8, 'Ritz-Carlton', '321098765', 'active'),
+
+-- Independence Inn
+(1, 4, 1, 'Independence Inn', '210987654', 'active'),
+(2, 1, 1, 'Independence Inn', '109876543', 'active'),
+(3, 3, 2, 'Independence Inn', '001234567', 'active'),
+(4, 5, 2, 'Independence Inn', '002345678', 'active'),
+(5, 2, 3, 'Independence Inn', '003456789', 'active'),
+(6, 4, 3, 'Independence Inn', '004567890', 'active'),
+(7, 1, 4, 'Independence Inn', '005678901', 'active'),
+(8, 3, 4, 'Independence Inn', '006789012', 'active'),
+(9, 5, 5, 'Independence Inn', '007890123', 'active'),
+(10, 2, 5, 'Independence Inn', '008901234', 'active'),
+(11, 4, 6, 'Independence Inn', '009012345', 'active'),
+(12, 1, 6, 'Independence Inn', '100123456', 'active'),
+(13, 3, 7, 'Independence Inn', '123456789', 'active'),
+(14, 5, 7, 'Independence Inn', '234567890', 'active'),
+(15, 2, 8, 'Independence Inn', '345678901', 'active'),
+(16, 4, 8, 'Independence Inn', '456789012', 'active'),
+
+-- Dragonfly Inn
+(1, 1, 1, 'Dragonfly Inn', '543210987', 'active'),
+(2, 3, 1, 'Dragonfly Inn', '432109876', 'active'),
+(3, 5, 2, 'Dragonfly Inn', '321098765', 'active'),
+(4, 2, 2, 'Dragonfly Inn', '210987654', 'active'),
+(5, 4, 3, 'Dragonfly Inn', '109876543', 'active'),
+(6, 1, 3, 'Dragonfly Inn', '001234567', 'active'),
+(7, 3, 4, 'Dragonfly Inn', '002345678', 'active'),
+(8, 5, 4, 'Dragonfly Inn', '003456789', 'active'),
+(9, 2, 5, 'Dragonfly Inn', '004567890', 'active'),
+(10, 4, 5, 'Dragonfly Inn', '005678901', 'active'),
+(11, 1, 6, 'Dragonfly Inn', '006789012', 'active'),
+(12, 3, 6, 'Dragonfly Inn', '007890123', 'active'),
+(13, 5, 7, 'Dragonfly Inn', '008901234', 'active'),
+(14, 2, 7, 'Dragonfly Inn', '009012345', 'active'),
+(15, 4, 8, 'Dragonfly Inn', '100123456', 'active'),
+(16, 1, 8, 'Dragonfly Inn', '123456789', 'active');
 
 -- Populate booking_date table 
+
+-- Grand Hotels
 INSERT INTO booking_date (booking_id, hotel_id, chain, date) VALUES
--- Records for booking_id 1
-(1, 2, 'Grand Hotels', '2022-03-01'),
-(1, 2, 'Grand Hotels', '2022-03-02'),
+(1, 1, 'Grand Hotels', '2022-01-01'),
+(1, 1, 'Grand Hotels', '2022-01-02');
 
--- Records for booking_id 2
-(2, 1, 'Royal Resorts', '2023-05-10'),
-(2, 1, 'Royal Resorts', '2023-05-11'),
+INSERT INTO booking_date (booking_id, hotel_id, chain, date) VALUES
+(2, 1, 'Grand Hotels', '2022-01-01'),
+(2, 1, 'Grand Hotels', '2022-01-02');
 
--- Records for booking_id 3
-(3, 3, 'Ritz-Carlton', '2024-07-20'),
-(3, 3, 'Ritz-Carlton', '2024-07-21'),
+INSERT INTO booking_date (booking_id, hotel_id, chain, date) VALUES
+(3, 2, 'Grand Hotels', '2022-01-01'),
+(3, 2, 'Grand Hotels', '2022-01-02');
 
--- Records for booking_id 4
-(4, 4, 'Independence Inn', '2022-09-15'),
-(4, 4, 'Independence Inn', '2022-09-16'),
+INSERT INTO booking_date (booking_id, hotel_id, chain, date) VALUES
+(4, 2, 'Grand Hotels', '2022-01-01'),
+(4, 2, 'Grand Hotels', '2022-01-02');
 
--- Records for booking_id 5
-(5, 2, 'Grand Hotels', '2023-12-05'),
-(5, 2, 'Grand Hotels', '2023-12-06'),
+INSERT INTO booking_date (booking_id, hotel_id, chain, date) VALUES
+(5, 3, 'Grand Hotels', '2022-01-01'),
+(5, 3, 'Grand Hotels', '2022-01-02');
 
--- Records for booking_id 6
-(6, 3, 'Royal Resorts', '2022-04-30'),
-(6, 3, 'Royal Resorts', '2022-05-01'),
+INSERT INTO booking_date (booking_id, hotel_id, chain, date) VALUES
+(6, 3, 'Grand Hotels', '2022-01-01'),
+(6, 3, 'Grand Hotels', '2022-01-02');
 
--- Records for booking_id 7
-(7, 1, 'Ritz-Carlton', '2023-08-08'),
-(7, 1, 'Ritz-Carlton', '2023-08-09'),
+INSERT INTO booking_date (booking_id, hotel_id, chain, date) VALUES
+(7, 4, 'Grand Hotels', '2022-01-01'),
+(7, 4, 'Grand Hotels', '2022-01-02');
 
--- Records for booking_id 8
-(8, 4, 'Independence Inn', '2024-10-25'),
-(8, 4, 'Independence Inn', '2024-10-26'),
+INSERT INTO booking_date (booking_id, hotel_id, chain, date) VALUES
+(8, 4, 'Grand Hotels', '2022-01-01'),
+(8, 4, 'Grand Hotels', '2022-01-02');
 
--- Records for booking_id 9
-(9, 2, 'Dragonfly Inn', '2022-11-03'),
-(9, 2, 'Dragonfly Inn', '2022-11-04'),
+INSERT INTO booking_date (booking_id, hotel_id, chain, date) VALUES
+(9, 5, 'Grand Hotels', '2022-01-01'),
+(9, 5, 'Grand Hotels', '2022-01-02');
 
--- Records for booking_id 10
-(10, 3, 'Grand Hotels', '2023-01-20'),
-(10, 3, 'Grand Hotels', '2023-01-21'),
+INSERT INTO booking_date (booking_id, hotel_id, chain, date) VALUES
+(10, 5, 'Grand Hotels', '2022-01-01'),
+(10, 5, 'Grand Hotels', '2022-01-02');
 
--- Records for booking_id 11
-(11, 4, 'Royal Resorts', '2024-06-12'),
-(11, 4, 'Royal Resorts', '2024-06-13'),
+INSERT INTO booking_date (booking_id, hotel_id, chain, date) VALUES
+(11, 6, 'Grand Hotels', '2022-01-01'),
+(11, 6, 'Grand Hotels', '2022-01-02');
 
--- Records for booking_id 12
-(12, 1, 'Independence Inn', '2022-12-18'),
-(12, 1, 'Independence Inn', '2022-12-19'),
+INSERT INTO booking_date (booking_id, hotel_id, chain, date) VALUES
+(12, 6, 'Grand Hotels', '2022-01-01'),
+(12, 6, 'Grand Hotels', '2022-01-02');
 
--- Records for booking_id 13
-(13, 2, 'Grand Hotels', '2023-05-30'),
-(13, 2, 'Grand Hotels', '2023-05-31'),
+INSERT INTO booking_date (booking_id, hotel_id, chain, date) VALUES
+(13, 7, 'Grand Hotels', '2022-01-01'),
+(13, 7, 'Grand Hotels', '2022-01-02');
 
--- Records for booking_id 14
-(14, 3, 'Ritz-Carlton', '2024-03-04'),
-(14, 3, 'Ritz-Carlton', '2024-03-05'),
+INSERT INTO booking_date (booking_id, hotel_id, chain, date) VALUES
+(14, 7, 'Grand Hotels', '2022-01-01'),
+(14, 7, 'Grand Hotels', '2022-01-02');
 
--- Records for booking_id 15
-(15, 4, 'Dragonfly Inn', '2022-08-18'),
-(15, 4, 'Dragonfly Inn', '2022-08-19'),
+INSERT INTO booking_date (booking_id, hotel_id, chain, date) VALUES
+(15, 8, 'Grand Hotels', '2022-01-01'),
+(15, 8, 'Grand Hotels', '2022-01-02');
 
--- Records for booking_id 16
-(16, 2, 'Royal Resorts', '2023-09-27'),
-(16, 2, 'Royal Resorts', '2023-09-28'),
-
--- Records for booking_id 17
-(17, 1, 'Grand Hotels', '2022-10-01'),
-(17, 1, 'Grand Hotels', '2022-10-02'),
-
--- Records for booking_id 18
-(18, 3, 'Independence Inn', '2023-11-12'),
-(18, 3, 'Independence Inn', '2023-11-13'),
-
--- Records for booking_id 19
-(19, 4, 'Ritz-Carlton', '2024-02-20'),
-(19, 4, 'Ritz-Carlton', '2024-02-21'),
-
--- Records for booking_id 20
-(20, 2, 'Dragonfly Inn', '2023-07-09'),
-(20, 2, 'Dragonfly Inn', '2023-07-10');
-
-
+INSERT INTO booking_date (booking_id, hotel_id, chain, date) VALUES
+(16, 8, 'Grand Hotels', '2022-01-01'),
+(16, 8, 'Grand Hotels', '2022-01-02');

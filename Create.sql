@@ -144,7 +144,7 @@ CREATE TABLE customer (
 );
 
 CREATE TABLE booking_renting (
-	booking_id INT AUTO_INCREMENT,
+	booking_id INT,
 	room_num INT,
     hotel_id INT,
 	chain VARCHAR(20),
