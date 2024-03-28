@@ -14,7 +14,7 @@ JOIN hotel h ON br.hotel_id = h.hotel_id AND br.chain = h.chain
 JOIN employee e ON h.chain = e.chain AND h.manager_SSN = e.SSN
 WHERE e.name = 'Lorelai Gilmore';
 
--- AGGREGATION Query to find the total number of rooms in each hotel --
+-- AGGREGATION Query to find the total number of rooms in each hotel chain --
 SELECT chain, SUM(num_rooms) AS total_rooms
 FROM hotel
 GROUP BY chain;
