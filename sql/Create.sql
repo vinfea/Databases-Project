@@ -116,6 +116,11 @@ CREATE TABLE employee (
     PRIMARY KEY (SSN)
 );
 
+--extra queries for employee login system
+ALTER TABLE employee
+ADD COLUMN username VARCHAR(50) NOT NULL,
+ADD COLUMN password VARCHAR(255) NOT NULL;  
+
 ALTER TABLE employee 
 ADD CONSTRAINT FK_employee
 FOREIGN KEY (hotel_id, chain) REFERENCES hotel(hotel_id, chain)
@@ -142,6 +147,12 @@ CREATE TABLE customer (
     registration_date DATE,
     PRIMARY KEY (SSN)
 );
+
+--extra queries for customer login system
+ALTER TABLE customer
+ADD COLUMN username VARCHAR(50) NOT NULL,
+ADD COLUMN password VARCHAR(255) NOT NULL;
+
 
 CREATE TABLE booking_renting (
 	booking_id INT,
