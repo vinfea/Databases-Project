@@ -24,8 +24,26 @@ db.connect((err) => {
   console.log('MySQL Connected...');
 });
 
-// Set up your Express routes for CRUD operations
-// For example, a route to get all items from a table
+// Serve static files from the 'public' folder
+app.use(express.static('public'));
+
+//used to parse json data coming in from the frontend
+app.use(express.json());
+
+
+// SET UP ROUTES FOR PAGES  --------------------------------------
+app.get('/login', (req, res) => {
+  res.sendFile(__dirname + '/public/login.html');
+});
+
+// Redirect to login page as default
+app.get('/', (req, res) => {
+  res.redirect('/login');
+});
+
+
+// SET UP ENDPOINTS FOR CRUD APIS ----------------------------------------------
+//get all the available rooms in the city
 app.get('/api/available-rooms-per-city', (req, res) => {
   const sql = 'SELECT * FROM available_rooms_per_city';
   db.query(sql, (err, result) => {
@@ -38,10 +56,42 @@ app.get('/api/available-rooms-per-city', (req, res) => {
   });
 });
 
-// Other CRUD routes for insert, update, delete, etc.
+//login api endpoint
+app.post('/login', (req, res) => {
+  const { userType, username, password } = req.body;
 
-// Serve static files from the 'public' folder
-app.use(express.static('public'));
+  let tableName;
+  if (userType === 'employee') {
+      tableName = 'employee';
+  } else if (userType === 'customer') {
+      tableName = 'customer';
+  }
+
+ const query = `SELECT * FROM ${tableName} WHERE username = ? AND password = ?`;
+  db.query(query, [username, password], (err, results) => {
+      if (err) {
+          console.error('Error executing MySQL query:', err);
+          res.status(500).send('Internal Server Error');
+          return;
+      }
+
+      if (results.length > 0) {
+          // User found, send success response
+          res.status(200).send('Login successful');
+      } else {
+          // User not found or invalid credentials, send error response
+          res.status(401).send('Invalid username or password');
+      }
+  });
+});
+
+// Menu route
+app.get('/menu', (req, res) => {
+  // Here you would typically render the menu page
+  // For now, just send back a response
+  res.send('This is the menu page');
+});
+
 
 // Start the server
 app.listen(PORT, () => {
