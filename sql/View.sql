@@ -1,4 +1,4 @@
---number of available rooms per area 
+-- number of available rooms per area 
 CREATE VIEW available_rooms_per_city AS
 SELECT
     get_city_from_address(h.address) AS city,
@@ -15,7 +15,7 @@ GROUP BY
     city;
 
 
---aggregate the capacity of rooms in each hotel
+-- aggregate the capacity of rooms in each hotel
 CREATE VIEW aggregated_room_capacity AS
 SELECT chain, hotel_id, SUM(capacity) AS total_capacity
 FROM room
