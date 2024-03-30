@@ -2,10 +2,49 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Room Search</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Rooms</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#searchForm').submit(function(e) {
+                e.preventDefault();
+
+                let formData = $(this).serialize();
+                $.ajax({
+                    type: 'GET',
+                    url: '/findRooms',
+                    data: formData,
+                    success: function(response) {
+                        console.log('Success:', response); // Log success response
+                        displayRooms(response);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(xhr.responseText);
+                    }
+                });
+            });
+
+            function displayRooms(rooms) {
+                let tableBody = $('#roomTable tbody');
+                tableBody.empty(); // Clear existing table rows
+                rooms.forEach(room => {
+                    let row = $('<tr>');
+                    row.append($('<td>').text(room.room_num));
+                    row.append($('<td>').text(room.hotel_id));
+                    row.append($('<td>').text(room.chain));
+                    row.append($('<td>').text(room.price));
+                    row.append($('<td>').text(room.capacity));
+                    row.append($('<td>').text(room.view));
+                    row.append($('<td>').text(room.location)); 
+                    tableBody.append(row);
+                });
+            }
+        });
+    </script>
 </head>
 <body>
-    <h1>Room Search</h1>
+    <h2>Find Rooms</h2>
     <form id="searchForm">
         <label for="startDate">Start Date:</label>
         <input type="date" id="startDate" name="startDate">
@@ -13,15 +52,73 @@
         <label for="endDate">End Date:</label>
         <input type="date" id="endDate" name="endDate">
         <br><br>
-        <label for="capacity">Room Capacity:</label>
+        <label for="capacity">Capacity:</label>
         <input type="number" id="capacity" name="capacity" min="1">
         <br><br>
-        <!-- Other search criteria inputs -->
+        <label for="city">City:</label>
+        <select id="city" name="city">
+            <option value="">Any</option>
+            <option value="Miami">Miami</option>
+            <option value="Las Vegas">Las Vegas</option>
+            <option value="San Francisco">San Francisco</option>
+            <option value="Orlando">Orlando</option>
+            <option value="New York">New York</option>
+            <option value="Denver">Denver</option>
+            <option value="Seattle">Seattle</option>
+            <option value="Chicago">Chicago</option>
+            <option value="Washington D.C.">Washington D.C.</option>
+            <option value="Boston">Boston</option>
+            <option value="Baltimore">Baltimore</option>
+            <option value="Richmond">Richmond</option>
+            <option value="Philadelphia">Philadelphia</option>
+            <option value="Hartford">Hartford</option>
+            <option value="New Haven">New Haven</option>
+            <option value="Mystic">Mystic</option>
+            <option value="Stars Hollow">Stars Hollow</option>
+            <option value="Woodbury">Woodbury</option>
+        </select>
+        <label for="hotelChain">Hotel Chain:</label>
+        <select id="hotelChain" name="hotelChain">
+            <option value="">Any</option> 
+            <option value="Ritz-Carlton">Ritz-Carlton</option>
+            <option value="Independence Inn">Independence Inn</option>
+            <option value="Dragonfly Inn">Dragonfly Inn</option>
+            <option value="Grand Hotels">Grand Hotels</option>
+            <option value="Royal Resorts">Royal Resorts</option>
+        </select>
+        <br><br>
+        <label for="roomView">Room View:</label>
+        <select id="roomView" name="roomView">
+            <option value="">Any</option>
+            <option value="mountainside">Mountainside</option>
+            <option value="oceanside">Oceanside</option>
+        </select>
+        <br><br>
+        <label for="numRooms">Number of Rooms:</label>
+        <input type="number" id="numRooms" name="numRooms" min="1">
+        <br><br>
+        <label for="price">Price (Max):</label>
+        <input type="number" id="price" name="price" min="0">
+        <br><br>
         <input type="submit" value="Search">
     </form>
-    <div id="roomList"></div>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="script.js"></script>
+    <h2>Available Rooms</h2>
+    <table id="roomTable" border="1">
+        <thead>
+            <tr>
+                <th>Room Number</th>
+                <th>Hotel ID</th>
+                <th>Chain</th>
+                <th>Price</th>
+                <th>Capacity</th>
+                <th>View</th>
+                <th>Location</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Table rows will be dynamically added here -->
+        </tbody>
+    </table>
 </body>
 </html>
