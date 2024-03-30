@@ -44,6 +44,9 @@ app.get('/', (req, res) => {
   res.sendFile(__dirname + '/public/findRooms.html');
 });
 
+app.get('/hotelCapacity', (req, res) => {
+  res.sendFile(__dirname + '/public/hotelCapacity.html');
+});
 
 // SET UP ENDPOINTS FOR CRUD APIS ----------------------------------------------
 //get all the available rooms in the city
