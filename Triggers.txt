@@ -1,15 +1,83 @@
--- Triggers -- 
+-- Triggers to stop insert with invalid input --
 
--- Placeholder for syntax -- 
+-- Insert email into chain_email --
 
 DELIMITER $$
 
-CREATE 
-TRIGGER test_trigger AFTER INSERT
-ON hotel
+CREATE TRIGGER insert_email_chain BEFORE INSERT
+ON chain_email
 FOR EACH ROW BEGIN
-INSERT INTO hotel_phone VALUES(NEW.hotel_id, NEW.chain, 'New Phone!');
+IF NEW.email NOT REGEXP '^[a-zA-Z0-9]+@[a-zA-Z]+\.[a-zA-Z]+$' THEN
+SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Invalid email.';
+END IF;
 END$$
 
-DELIMITER ;
+DELIMITER ; 
+
+-- Insert email into hotel --
+
+DELIMITER $$
+
+CREATE TRIGGER insert_email_hotel BEFORE INSERT
+ON hotel
+FOR EACH ROW BEGIN
+IF NEW.email NOT REGEXP '^[a-zA-Z0-9]+@[a-zA-Z]+\\.[a-zA-Z]+$' THEN
+SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Invalid email.';
+END IF;
+END$$
+
+DELIMITER ; 
+
+-- Insert phone_num into chain_phone_num --
+
+DELIMITER $$
+
+CREATE TRIGGER insert_phone_chain BEFORE INSERT
+ON chain_phone_num
+FOR EACH ROW BEGIN
+IF NEW.phone_num NOT REGEXP '^\\+[0-9]{1}[[:blank:]]\\([0-9]{3}\\)[[:blank:]][0-9]{3}-[0-9]{4}$' THEN
+SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Invalid phone number.';
+END IF;
+END$$
+
+DELIMITER ; 
+
+-- Insert phone_num into hotel_phone --
+
+DELIMITER $$
+
+CREATE TRIGGER insert_phone_hotel BEFORE INSERT
+ON hotel_phone
+FOR EACH ROW BEGIN
+IF NEW.phone_num NOT REGEXP '^\\+[0-9]{1}[[:blank:]]\\([0-9]{3}\\)[[:blank:]][0-9]{3}-[0-9]{4}$' THEN
+SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Invalid phone number.';
+END IF;
+END$$
+
+DELIMITER ; 
+
+-- Insert room_num into booking_renting --
+
+DELIMITER $$
+
+CREATE TRIGGER insert_booking_renting BEFORE INSERT
+ON booking_renting
+FOR EACH ROW BEGIN
+IF (SELECT room_num
+FROM room 
+WHERE room_num = NEW.room_num AND hotel_id = NEW.hotel_id AND chain = NEW.chain) IS NULL THEN 
+SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Invalid booking.';
+END IF;
+END$$
+
+DELIMITER ; 
+
+
+
+
+
+
+
+
+
 
