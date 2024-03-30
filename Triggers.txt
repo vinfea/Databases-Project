@@ -73,13 +73,7 @@ END$$
 DELIMITER ; 
 
 
-
-
-
-
-
-
-
+-- get city from address field ---
 
 DELIMITER $$
 
