@@ -21,11 +21,32 @@ function fetchAvailableRoomsPerCity() {
     const itemList = document.getElementById('itemList');
     itemList.innerHTML = ''; // Clear previous content
   
+    //create table 
+    const table = document.createElement('table');
+
+    //create table header row
+    const headerRow=table.createTHead().insertRow();
+    const cityHeader=headerRow.insertCell();
+    cityHeader.textContent='City';
+    const availableRoomsHeader=headerRow.insertCell();
+    availableRoomsHeader.textContent='Available Rooms:';
+    
+    //create table body
+    const tableBody=table.createTBody();
+
+    //populate table with data
     data.forEach(item => {
-      const li = document.createElement('li');
-      li.textContent = `City: ${item.city}, Available Rooms Count: ${item.available_rooms_count}`;
-      itemList.appendChild(li);
+      const row= tableBody.insertRow();
+      const cityCell=row.insertCell();
+      cityCell.textContent=item.city;
+      const availableRoomsCell=row.insertCell();
+      availableRoomsCell.textContent=item.available_rooms_count;
+      availableRoomsCell.style.textAlign = 'center'; 
+
     });
+
+    //append table to the itemlist container
+    itemList.appendChild(table);
   }
   
   // Call the function to fetch and display data when the page loads
