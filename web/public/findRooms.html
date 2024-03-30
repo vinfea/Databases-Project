@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Room Search</title>
+</head>
+<body>
+    <h1>Room Search</h1>
+    <form id="searchForm">
+        <label for="startDate">Start Date:</label>
+        <input type="date" id="startDate" name="startDate">
+        <br><br>
+        <label for="endDate">End Date:</label>
+        <input type="date" id="endDate" name="endDate">
+        <br><br>
+        <label for="capacity">Room Capacity:</label>
+        <input type="number" id="capacity" name="capacity" min="1">
+        <br><br>
+        <!-- Other search criteria inputs -->
+        <input type="submit" value="Search">
+    </form>
+    <div id="roomList"></div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
