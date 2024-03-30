@@ -116,7 +116,7 @@ CREATE TABLE employee (
     PRIMARY KEY (SSN)
 );
 
---extra queries for employee login system
+-- extra fields for employee login system --
 ALTER TABLE employee
 ADD COLUMN username VARCHAR(50) NOT NULL,
 ADD COLUMN password VARCHAR(255) NOT NULL;  
@@ -148,11 +148,10 @@ CREATE TABLE customer (
     PRIMARY KEY (SSN)
 );
 
---extra queries for customer login system
+-- extra fields for customer login system --
 ALTER TABLE customer
 ADD COLUMN username VARCHAR(50) NOT NULL,
 ADD COLUMN password VARCHAR(255) NOT NULL;
-
 
 CREATE TABLE booking_renting (
 	booking_id INT,
@@ -189,12 +188,5 @@ ALTER TABLE booking_date
 ADD CONSTRAINT FK_booking_date
 FOREIGN KEY (booking_id, hotel_id, chain) REFERENCES booking_renting(booking_id, hotel_id, chain)
 ON DELETE CASCADE; 
-
-
-
-
-
-
-
 
 

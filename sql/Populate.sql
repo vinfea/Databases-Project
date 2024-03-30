@@ -543,99 +543,8 @@ INSERT INTO damage (room_num, hotel_id, chain, damage) VALUES
 (2, 8, 'Dragonfly Inn', 'Damaged Door Frame');
 
 -- Populate employee table
-INSERT INTO employee (SSN, name, address, hotel_id, chain) VALUES
--- Employees for Grand Hotels
-('111111111', 'Emma Smith', '123 Main Street, New York, USA', 1, 'Grand Hotels'),
-('222222222', 'Oliver Johnson', '456 Oak Avenue, Los Angeles, USA', 1, 'Grand Hotels'),
-('333333333', 'Sophia Brown', '789 Pine Street, Chicago, USA', 2, 'Grand Hotels'),
-('444444444', 'William Lee', '101 Elm Street, Miami, USA', 2, 'Grand Hotels'),
-('555555555', 'Lucas Taylor', '456 Maple Avenue, San Francisco, USA', 3, 'Grand Hotels'),
-('666666666', 'Isabella Smith', '789 Cedar Street, Seattle, USA', 3, 'Grand Hotels'),
-('777777777', 'Ella Davis', '123 Oak Street, Boston, USA', 4, 'Grand Hotels'),
-('888888888', 'Liam Johnson', '456 Walnut Street, Houston, USA', 4, 'Grand Hotels'),
-('999999999', 'Chloe Miller', '789 Birch Street, Philadelphia, USA', 5, 'Grand Hotels'),
-('123456789', 'Lucas Wilson', '101 Cedar Street, Phoenix, USA', 5, 'Grand Hotels'),
-('234567890', 'Natalie Moore', '123 Main Street, Denver, USA', 6, 'Grand Hotels'),
-('345678901', 'Ella Taylor', '456 Oak Avenue, Detroit, USA', 6, 'Grand Hotels'),
-('456789012', 'Dylan Johnson', '789 Pine Street, Baltimore, USA', 7, 'Grand Hotels'),
-('567890123', 'Brooklyn Brown', '101 Elm Street, San Antonio, USA', 7, 'Grand Hotels'),
-('678901234', 'Leah Davis', '123 Maple Avenue, San Diego, USA', 8, 'Grand Hotels'),
-('789012345', 'Zoe Wilson', '456 Cedar Street, Dallas, USA', 8, 'Grand Hotels'),
-
--- Employees for Royal Resorts
-('111111112', 'David Miller', '123 Main Street, Las Vegas, USA', 1, 'Royal Resorts'),
-('222222223', 'Anna Wilson', '456 Oak Avenue, Orlando, USA', 1, 'Royal Resorts'),
-('333333334', 'Ryan Moore', '789 Pine Street, Atlanta, USA', 2, 'Royal Resorts'),
-('444444445', 'Sophia Taylor', '101 Elm Street, Austin, USA', 2, 'Royal Resorts'),
-('555555556', 'Grace Smith', '456 Maple Avenue, Nashville, USA', 3, 'Royal Resorts'),
-('666666667', 'Daniel Johnson', '789 Cedar Street, Portland, USA', 3, 'Royal Resorts'),
-('777777778', 'Mia Williams', '123 Oak Street, Charlotte, USA', 4, 'Royal Resorts'),
-('888888889', 'Ethan Jones', '456 Walnut Street, Honolulu, USA', 4, 'Royal Resorts'),
-('999999990', 'Chloe Brown', '789 Birch Street, Tampa, USA', 5, 'Royal Resorts'),
-('123456780', 'Lucas Davis', '101 Cedar Street, Pittsburgh, USA', 5, 'Royal Resorts'),
-('234567891', 'Natalie Miller', '123 Main Street, Minneapolis, USA', 6, 'Royal Resorts'),
-('345678902', 'Ella Wilson', '456 Oak Avenue, Kansas City, USA', 6, 'Royal Resorts'),
-('456789013', 'Dylan Moore', '789 Pine Street, Sacramento, USA', 7, 'Royal Resorts'),
-('567890124', 'Brooklyn Taylor', '101 Elm Street, Salt Lake City, USA', 7, 'Royal Resorts'),
-('678901235', 'Leah Smith', '123 Maple Avenue, Honolulu, USA', 8, 'Royal Resorts'),
-('789012346', 'Zoe Johnson', '456 Cedar Street, Memphis, USA', 8, 'Royal Resorts'),
-
--- Employees for Ritz-Carlton 
-('111111113', 'Soma Yukihira', '123 Main Street, Vancouver, Canada', 1, 'Ritz-Carlton'),
-('222222224', 'Megumi Tadokoro', '456 Oak Avenue, Toronto, Canada', 1, 'Ritz-Carlton'),
-('333333335', 'Ryo Kurokiba', '789 Pine Street, Montreal, Canada', 2, 'Ritz-Carlton'),
-('444444446', 'Alice Nakiri', '101 Elm Street, Ottawa, Canada', 2, 'Ritz-Carlton'),
-('555555557', 'Erina Nakiri', '456 Maple Avenue, Calgary, Canada', 3, 'Ritz-Carlton'),
-('666666668', 'Takumi Aldini', '789 Cedar Street, Edmonton, Canada', 3, 'Ritz-Carlton'),
-('777777779', 'Hisako Arato', '123 Oak Street, Winnipeg, Canada', 4, 'Ritz-Carlton'),
-('888888880', 'Akira Hayama', '456 Walnut Street, Quebec City, Canada', 4, 'Ritz-Carlton'),
-('999999991', 'Jun Shiomi', '789 Birch Street, Halifax, Canada', 5, 'Ritz-Carlton'),
-('123456781', 'Nene Kinokuni', '101 Cedar Street, Hamilton, Canada', 5, 'Ritz-Carlton'),
-('234567892', 'Ikumi Mito', '123 Main Street, London, UK', 6, 'Ritz-Carlton'),
-('345678903', 'Isami Aldini', '456 Oak Avenue, Manchester, UK', 6, 'Ritz-Carlton'),
-('456789014', 'Yuki Yoshino', '789 Pine Street, Birmingham, UK', 7, 'Ritz-Carlton'),
-('567890125', 'Roland Chapelle', '101 Elm Street, Glasgow, UK', 7, 'Ritz-Carlton'),
-('678901236', 'Kojiro Shinomiya', '123 Maple Avenue, Liverpool, UK', 8, 'Ritz-Carlton'),
-('789012347', 'Rindou Kobayashi', '456 Cedar Street, Dublin, Ireland', 8, 'Ritz-Carlton'),
-
--- Employees for Independence Inn
-('111111115', 'John Doe', '123 Main Street, Independence, USA', 1, 'Independence Inn'),
-('222222226', 'Jane Smith', '456 Oak Avenue, Liberty, USA', 1, 'Independence Inn'),
-('333333337', 'Michael Johnson', '789 Pine Street, Freedom, USA', 2, 'Independence Inn'),
-('444444448', 'Emily Brown', '101 Elm Street, Liberty, USA', 2, 'Independence Inn'),
-('555555559', 'Jessica Taylor', '456 Maple Avenue, Patriot, USA', 3, 'Independence Inn'),
-('666666670', 'Andrew Wilson', '789 Cedar Street, Liberty, USA', 3, 'Independence Inn'),
-('777777771', 'Michelle Davis', '123 Oak Street, Freedom, USA', 4, 'Independence Inn'),
-('888888882', 'Chris Lee', '456 Walnut Street, Independence, USA', 4, 'Independence Inn'),
-('999999993', 'Amanda Miller', '789 Birch Street, Liberty, USA', 5, 'Independence Inn'),
-('123456783', 'Brian Wilson', '101 Cedar Street, Patriot, USA', 5, 'Independence Inn'),
-('234567894', 'Stephanie Moore', '123 Main Street, Freedom, USA', 6, 'Independence Inn'),
-('345678905', 'Daniel Taylor', '456 Oak Avenue, Liberty, USA', 6, 'Independence Inn'),
-('456789016', 'Jessica Brown', '789 Pine Street, Independence, USA', 7, 'Independence Inn'),
-('567890127', 'Michael Johnson', '101 Elm Street, Patriot, USA', 7, 'Independence Inn'),
-('678901238', 'Sarah Davis', '123 Maple Avenue, Freedom, USA', 8, 'Independence Inn'),
-('789012349', 'Ryan Wilson', '456 Cedar Street, Liberty, USA', 8, 'Independence Inn'), 
-
--- Employees for Dragonfly Inn 
-('111111114', 'Lorelai Gilmore', '123 Main Street, Stars Hollow, USA', 1, 'Dragonfly Inn'),
-('222222225', 'Rory Gilmore', '456 Oak Avenue, Hartford, USA', 1, 'Dragonfly Inn'),
-('333333336', 'Luke Danes', '789 Pine Street, Woodbury, USA', 2, 'Dragonfly Inn'),
-('444444447', 'Sookie St. James', '101 Elm Street, Hartford, USA', 2, 'Dragonfly Inn'),
-('555555558', 'Lane Kim', '456 Maple Avenue, Washington, USA', 3, 'Dragonfly Inn'),
-('666666669', 'Michel Gerard', '789 Cedar Street, Woodbury, USA', 3, 'Dragonfly Inn'),
-('777777770', 'Emily Gilmore', '123 Oak Street, Hartford, USA', 4, 'Dragonfly Inn'),
-('888888881', 'Paris Geller', '456 Walnut Street, Stars Hollow, USA', 4, 'Dragonfly Inn'),
-('999999992', 'Richard Gilmore', '789 Birch Street, Washington, USA', 5, 'Dragonfly Inn'),
-('123456782', 'Dean Forester', '101 Cedar Street, Woodbury, USA', 5, 'Dragonfly Inn'),
-('234567893', 'Jess Mariano', '123 Main Street, Hartford, USA', 6, 'Dragonfly Inn'),
-('345678904', 'Logan Huntzberger', '456 Oak Avenue, Stars Hollow, USA', 6, 'Dragonfly Inn'),
-('456789015', 'Christopher Hayden', '789 Pine Street, Washington, USA', 7, 'Dragonfly Inn'),
-('567890126', 'Taylor Doose', '101 Elm Street, Woodbury, USA', 7, 'Dragonfly Inn'),
-('678901237', 'Miss Patty', '123 Maple Avenue, Hartford, USA', 8, 'Dragonfly Inn'),
-('789012348', 'Babette Dell', '456 Cedar Street, Stars Hollow, USA', 8, 'Dragonfly Inn');
-
 INSERT INTO employee (SSN, name, address, hotel_id, chain, username, password) VALUES
--- Employees for Grand Hotels
+-- Populate employee table with usernames and default passwords for Grand Hotels
 ('111111111', 'Emma Smith', '123 Main Street, New York, USA', 1, 'Grand Hotels', 'esmith', 'defaultpassword'),
 ('222222222', 'Oliver Johnson', '456 Oak Avenue, Los Angeles, USA', 1, 'Grand Hotels', 'ojohnson', 'defaultpassword'),
 ('333333333', 'Sophia Brown', '789 Pine Street, Chicago, USA', 2, 'Grand Hotels', 'sbrown', 'defaultpassword'),
@@ -671,7 +580,7 @@ INSERT INTO employee (SSN, name, address, hotel_id, chain, username, password) V
 ('678901235', 'Leah Smith', '123 Maple Avenue, Honolulu, USA', 8, 'Royal Resorts', 'lsmith', 'defaultpassword'),
 ('789012346', 'Zoe Johnson', '456 Cedar Street, Memphis, USA', 8, 'Royal Resorts', 'zjohnson', 'defaultpassword'),
 
--- Populate employee table for Ritz-Carlton
+-- Populate employee table with usernames and default passwords for Ritz-Carlton
 ('111111113', 'Soma Yukihira', '123 Main Street, Vancouver, Canada', 1, 'Ritz-Carlton', 'soma_ritz', 'soma123'),
 ('222222224', 'Megumi Tadokoro', '456 Oak Avenue, Toronto, Canada', 1, 'Ritz-Carlton', 'megumi_ritz', 'megumi123'),
 ('333333335', 'Ryo Kurokiba', '789 Pine Street, Montreal, Canada', 2, 'Ritz-Carlton', 'ryo_ritz', 'ryo123'),
@@ -839,38 +748,6 @@ INSERT INTO employee_role (employee_SSN, role) VALUES
 ('789012347', 'Chef');
     
 -- Populate customer table
-INSERT INTO customer (SSN, name, address, registration_date) VALUES
-('123456789', 'Monkey D. Luffy', '123 East Blue Street, Foosha Village', '2014-05-20'),
-('234567890', 'Roronoa Zoro', '456 Shimotsuki Village, East Blue', '2015-08-12'),
-('345678901', 'Nami', '789 Cocoyasi Village, East Blue', '2016-03-28'),
-('456789012', 'Usopp', '101 Syrup Village, East Blue', '2017-11-05'),
-('567890123', 'Sanji Vinsmoke', '123 Baratie, East Blue', '2018-07-19'),
-('678901234', 'Tony Tony Chopper', '456 Drum Island, North Blue', '2019-02-14'),
-('789012345', 'Nico Robin', '789 Ohara Island, West Blue', '2020-09-30'),
-('890123456', 'Franky', '101 Water 7, West Blue', '2021-06-24'),
-('901234567', 'Brook', '123 Florian Triangle', '2022-04-17'),
-('012345678', 'Jinbe', '456 Fish-Man Island', '2023-01-01'),
-('098765432', 'Ichigo Kurosaki', '123 Karakura Town, Human World', '2014-07-08'),
-('987654321', 'Rukia Kuchiki', '456 Soul Society', '2015-10-15'),
-('876543210', 'Renji Abarai', '789 Rukongai, Soul Society', '2016-05-29'),
-('765432109', 'Orihime Inoue', '101 Karakura Town, Human World', '2017-12-03'),
-('654321098', 'Yasutora Sado', '123 Naruki City, Human World', '2018-08-21'),
-('543210987', 'Uryu Ishida', '456 Karakura Town, Human World', '2019-03-14'),
-('432109876', 'Rangiku Matsumoto', '789 Soul Society', '2020-11-09'),
-('321098765', 'Toshiro Hitsugaya', '101 Soul Society', '2021-07-26'),
-('210987654', 'Byakuya Kuchiki', '123 Soul Society', '2022-05-10'),
-('109876543', 'Kenpachi Zaraki', '456 Soul Society', '2023-02-22'),
-('001234567', 'Naruto Uzumaki', '123 Hidden Leaf Village, Land of Fire', '2014-10-11'),
-('002345678', 'Sasuke Uchiha', '456 Hidden Leaf Village, Land of Fire', '2015-09-06'),
-('003456789', 'Sakura Haruno', '789 Hidden Leaf Village, Land of Fire', '2016-04-23'),
-('004567890', 'Kakashi Hatake', '101 Hidden Leaf Village, Land of Fire', '2017-11-17'),
-('005678901', 'Shikamaru Nara', '123 Hidden Leaf Village, Land of Fire', '2018-06-09'),
-('006789012', 'Choji Akimichi', '456 Hidden Leaf Village, Land of Fire', '2019-03-04'),
-('007890123', 'Ino Yamanaka', '789 Hidden Leaf Village, Land of Fire', '2020-12-28'),
-('008901234', 'Neji Hyuga', '101 Hidden Leaf Village, Land of Fire', '2021-10-20'),
-('009012345', 'Rock Lee', '123 Hidden Leaf Village, Land of Fire', '2022-08-14'),
-('100123456', 'Tenten', '456 Hidden Leaf Village, Land of Fire', '2023-05-07');
-
 INSERT INTO customer (SSN, name, address, registration_date, username, password) VALUES
 ('123456789', 'Monkey D. Luffy', '123 East Blue Street, Foosha Village', '2014-05-20', 'luffy', 'gumgum'),
 ('234567890', 'Roronoa Zoro', '456 Shimotsuki Village, East Blue', '2015-08-12', 'zoro', 'santoryu'),
