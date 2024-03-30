@@ -30,15 +30,18 @@ app.use(express.static('public'));
 //used to parse json data coming in from the frontend
 app.use(express.json());
 
+// Redirect to login page as default
+app.get('/', (req, res) => {
+  res.redirect('/login');
+});
 
 // SET UP ROUTES FOR PAGES  --------------------------------------
 app.get('/login', (req, res) => {
   res.sendFile(__dirname + '/public/login.html');
 });
 
-// Redirect to login page as default
-app.get('/', (req, res) => {
-  res.redirect('/login');
+app.get('/', (req, res) => { 
+  res.sendFile(__dirname + '/public/findRooms.html');
 });
 
 
@@ -100,6 +103,63 @@ app.post('/login', (req, res) => {
       }
   });
 });
+
+//api endpoint to get filter the rooms
+app.get('/findRooms', (req, res) => {
+  const { startDate, endDate, capacity, hotelChain, roomView, numRooms, price, city } = req.query;
+
+  // Define the base SQL query
+  let sql = `SELECT r.room_num, r.hotel_id, r.chain, r.price, r.capacity, r.view, h.address AS location
+             FROM room r
+             JOIN hotel h ON r.hotel_id = h.hotel_id AND r.chain = h.chain
+             WHERE r.capacity = ?`;
+  let values = [capacity];
+
+  // Add conditions for start date and end date if provided
+  if (startDate && endDate) {
+      sql += ` AND r.room_num NOT IN (
+                    SELECT DISTINCT br.room_num
+                    FROM booking_renting br
+                    JOIN booking_date bd ON br.booking_id = bd.booking_id
+                    WHERE bd.date BETWEEN ? AND ?
+                    AND br.hotel_id = r.hotel_id
+                    AND br.chain = r.chain
+                )`;
+      values.push(startDate, endDate);
+  }
+
+  // Add conditions for hotel chain, room view, num_rooms, price, and city
+  if (hotelChain) {
+      sql += ` AND h.chain = ?`;
+      values.push(hotelChain);
+  }
+  if (roomView) {
+      sql += ` AND r.view = ?`;
+      values.push(roomView);
+  }
+  if (numRooms) {
+      sql += ` AND h.num_rooms >= ?`;
+      values.push(numRooms);
+  }
+  if (price) {
+      sql += ` AND r.price <= ?`;
+      values.push(price);
+  }
+  if (city) {
+      sql += ` AND h.address LIKE ?`;
+      values.push(`%${city}%`);
+  }
+
+  db.query(sql, values, (err, results) => {
+      if (err) {
+          console.error('Error executing MySQL query:', err);
+          res.status(500).send('Internal Server Error');
+          return;
+      }
+      res.json(results);
+  });
+});
+
 
 // Menu route
 app.get('/menu', (req, res) => {
