@@ -121,16 +121,19 @@
                 });
             }
         }
-
-        function deleteBooking(bookingId) {
+        function deleteBooking(bookingId, hotelId, chain) {
             if (confirm('Are you sure you want to delete this booking?')) {
                 // Send request to backend API to delete booking
                 fetch('/api/deleteBooking', {
-                    method: 'POST',
+                    method: 'DELETE', // Change method to DELETE
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ bookingId: bookingId })
+                    body: JSON.stringify({ 
+                        bookingId: bookingId,
+                        hotelId: hotelId,
+                        chain: chain
+                    })
                 })
                 .then(response => {
                     if (!response.ok) {

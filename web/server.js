@@ -187,9 +187,20 @@ app.delete('/api/deleteBooking', (req, res) => {
           console.error('Error deleting booking:', err);
           return res.status(500).json({ error: 'Failed to delete booking.' });
       }
-      res.json({ message: 'Booking deleted successfully.' });
+
+      // Fetch updated list of bookings
+      const username = req.body.username; // Assuming username is also sent in the request
+      fetchBookings(username)
+          .then(updatedBookings => {
+              res.json({ message: 'Booking deleted successfully.', bookings: updatedBookings });
+          })
+          .catch(error => {
+              console.error('Error fetching updated bookings:', error);
+              res.status(500).json({ error: 'Failed to fetch updated bookings.' });
+          });
   });
 });
+
 
 
 //login api endpoint
