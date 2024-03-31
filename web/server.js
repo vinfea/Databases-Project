@@ -209,6 +209,38 @@ app.delete('/api/deleteBooking', (req, res) => {
 });
 
 
+app.post('/api/updateBookingStatus', (req, res) => {
+  const { bookingId, hotelId, chain } = req.body;
+
+  // Validate input parameters
+  if (!bookingId || !hotelId || !chain) {
+    return res.status(400).json({ error: 'Missing required parameters' });
+  }
+
+  // Update the booking status in the database
+  const query = `
+    UPDATE booking_renting
+    SET is_renting = 'renting'
+    WHERE booking_id = ? AND hotel_id = ? AND chain = ?
+  `;
+  const values = [bookingId, hotelId, chain];
+
+  db.query(query, values, (err, result) => {
+    if (err) {
+      console.error('Error updating booking status:', err);
+      return res.status(500).json({ error: 'Failed to update booking status' });
+    }
+    // Check if any rows were affected by the update
+    if (result && result.affectedRows === 0) { // Added result guard
+      return res.status(404).json({ error: 'Booking not found' });
+    }
+    res.json({ message: 'Booking status updated successfully' });
+  });
+});
+
+
+
+
 
 //login api endpoint
 app.post('/login', (req, res) => {
