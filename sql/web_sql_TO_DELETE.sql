@@ -13,10 +13,11 @@ DELETE FROM booking_renting
 WHERE booking_id = '3' AND hotel_id = '1' AND chain = 'Grand Hotels';
 
 -- Show all bookings for a hotel the employee works at, given their username
-SELECT br.booking_id, br.room_num, br.hotel_id, br.chain, br.customer_SSN, br.is_renting, bd.date
+SELECT br.booking_id, br.room_num, br.hotel_id, br.chain, br.customer_SSN, br.is_renting, bd.date, bp.cc_number, exp_date, ccv
 FROM booking_renting br
 JOIN employee e ON br.hotel_id = e.hotel_id AND br.chain = e.chain
 JOIN booking_date bd ON bd.booking_id = br.booking_id AND bd.hotel_id = br.hotel_id AND bd.chain = br.chain
+JOIN booking_payment bp ON bp.booking_id = br.booking_id AND bp.hotel_id = br.hotel_id AND bp.chain = br.chain
 WHERE e.username = 'bbrown'; -- password is defaultpassword
 
 -- Check in a customer as an employee from list of bookings
