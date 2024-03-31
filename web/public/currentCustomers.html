@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Current Customers</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Current Customers</h1>
+    <div id="customersContainer">
+        <!-- Customers will be displayed here -->
+    </div>
+
+    <script>
+        function fetchCustomers(employeeUsername) {
+            const apiUrl = `/api/currentCustomers?employeeUsername=${employeeUsername}`;
+            fetch(apiUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch customers. Please try again later.');
+                    }
+                    return response.json();
+                })
+                .then(customers => {
+                    displayCustomers(customers);
+                })
+                .catch(error => {
+                    console.error('Error fetching customers:', error.message);
+                    const customersContainer = document.getElementById('customersContainer');
+                    customersContainer.innerHTML = `<p>${error.message}</p>`;
+                });
+        }
+
+        function displayCustomers(customers) {
+            const customersContainer = document.getElementById('customersContainer');
+            if (customers && customers.length > 0) {
+                let html = '<table>';
+                html += '<tr><th>SSN</th><th>Name</th><th>Address</th><th>Username</th><th>Registration Date</th></tr>';
+                customers.forEach(customer => {
+                    const registrationDate = new Date(customer.registration_date).toLocaleDateString();
+                    html += `<tr>
+                                <td>${customer.SSN}</td>
+                                <td>${customer.name}</td>
+                                <td>${customer.address}</td>
+                                <td>${customer.username}</td>
+                                <td>${registrationDate}</td>
+                            </tr>`;
+                });
+                html += '</table>';
+                customersContainer.innerHTML = html;
+            } else {
+                customersContainer.innerHTML = '<p>No customers found at this hotel.</p>';
+            }
+        }
+
+        // Retrieve employee's username from localStorage (assuming it's already stored)
+        const storedUsername = localStorage.getItem('username');
+        if (storedUsername) {
+            fetchCustomers(storedUsername);
+        } else {
+            const customersContainer = document.getElementById('customersContainer');
+            customersContainer.innerHTML = '<p>Employee username not found.</p>';
+        }
+    </script>
+</body>
+</html>
