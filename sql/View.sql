@@ -14,7 +14,6 @@ WHERE
 GROUP BY
     city;
 
-
 -- aggregate the capacity of rooms in each hotel
 CREATE VIEW aggregated_room_capacity AS
 SELECT chain, hotel_id, SUM(capacity) AS total_capacity

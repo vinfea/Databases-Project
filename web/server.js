@@ -32,7 +32,11 @@ app.use(express.json());
 
 // Redirect to login page as default
 app.get('/', (req, res) => {
-  res.redirect('/login');
+  res.redirect('/login.html');
+});
+
+app.get('/login', (req, res) => {
+  res.redirect('/login.html');
 });
 
 // SET UP ROUTES FOR PAGES  --------------------------------------
@@ -40,10 +44,16 @@ app.get('/login', (req, res) => {
   res.sendFile(__dirname + '/public/login.html');
 });
 
-app.get('/', (req, res) => { 
+app.get('/login.html', (req, res) => {
+  res.sendFile(__dirname + '/public/login.html');
+});
+app.get('/findRooms', (req, res) => {
   res.sendFile(__dirname + '/public/findRooms.html');
 });
 
+app.get('/hotelCapacity', (req, res) => {
+  res.sendFile(__dirname + '/public/hotelCapacity.html');
+});
 
 
 // SET UP ENDPOINTS FOR CRUD APIS ----------------------------------------------
@@ -91,6 +101,22 @@ app.post('/api/customerbookings', (req, res) => {
     res.json(results);
   });
 });
+
+//get all aggregated room capacity in all hotel chains
+app.get('/api/aggregated-room-capacity-view', (req, res) => {
+  // Perform database query to fetch data from the MySQL view
+  const sql2= 'SELECT * FROM aggregated_room_capacity';
+  db.query(sql2, (err, result1) => {
+      if (err) {
+          console.error('Error fetching data from view:', err);
+          res.status(500).json({ error: 'Internal Server Error' });
+          return;
+      }
+      // Send the data fetched from the view as a JSON response
+      res.json(result1);
+  });
+});
+
 
 //login api endpoint
 app.post('/login', (req, res) => {
