@@ -42,6 +42,8 @@
   </form>
 
   <div id="message"></div>
+  <br>
+  <a href="menu.html">Return to Menu</a>
 
   <script>
     const form = document.getElementById('bookingForm');
@@ -83,6 +85,7 @@
 
         const customerData = await customerResponse.json();
         const { SSN } = customerData;
+        console.log('Customer created with SSN:', SSN);
 
         // Update booking data with customer SSN
         requestBody.customer_SSN = SSN;

@@ -593,7 +593,10 @@ app.get('/available-rooms', (req, res) => {
 
 // Create a new customer endpoint
 app.post('/customers', (req, res) => {
-  const { SSN, name, address, registration_date, username, password } = req.body;
+  const { SSN, name, address, username, password } = req.body;
+  
+  // Generate registration_date based on current date
+  const registration_date = new Date().toISOString().slice(0, 10);
 
   // Insert the new customer into the database
   const sql = 'INSERT INTO customer (SSN, name, address, registration_date, username, password) VALUES (?, ?, ?, ?, ?, ?)';
@@ -605,8 +608,10 @@ app.post('/customers', (req, res) => {
       return res.status(500).json({ error: 'Failed to create customer' });
     }
 
-    console.log('New customer created:', result.insertId);
-    res.status(201).json({ message: 'Customer created successfully', customerId: result.insertId });
+    console.log('New customer created:', SSN);
+
+    // Return success response with SSN
+    res.status(201).json({ message: 'Customer created successfully', SSN: SSN });
   });
 });
 
