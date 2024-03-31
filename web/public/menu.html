@@ -16,7 +16,7 @@
         <li><a href="availableRooms.html">View 1: Available Rooms Per City</a></li>
         <li><a href="hotelCapacity.html">View 2: Room Capacity Per Hotel</a></li>
         <li><a href="findRooms.html">Find Rooms</a></li>
-        <li><a href="customerBookings.html">Customer Bookings</a></li>
+        <li id = "customerBookingsOption"><a href="customerBookings.html">Customer Bookings</a></li>
         <li id="employeeBookingsOption"><a href="employeeBookings.html">Employee Bookings</a></li>
     </ul>
 
@@ -31,6 +31,14 @@
         const employeeBookingsOption = document.getElementById('employeeBookingsOption');
         if (employeeBookingsOption) {
             employeeBookingsOption.style.display = 'none';
+        }
+    }
+
+    if (roleDisplay.textContent.trim().toLowerCase() === 'employee') {
+        // Hide the employee bookings option
+        const customerBookingsOption = document.getElementById('customerBookingsOption');
+        if (customerBookingsOption) {
+            customerBookingsOption.style.display = 'none';
         }
     }
 </script>
