@@ -6,6 +6,7 @@
 </head>
 <body>
     <h2>Menu</h2>
+
     <!-- Your menu options here -->
 
     <h4>Welcome <span id="usernameDisplay"></span>! You are logged in as a <span id="roleDisplay"></span>.</h4>
@@ -16,9 +17,22 @@
         <li><a href="hotelCapacity.html">View 2: Room Capacity Per Hotel</a></li>
         <li><a href="findRooms.html">Find Rooms</a></li>
         <li><a href="customerBookings.html">Customer Bookings</a></li>
-        <li><a href="employeeBookings.html">Employee Bookings</a></li>
+        <li id="employeeBookingsOption"><a href="employeeBookings.html">Employee Bookings</a></li>
     </ul>
 
 <script src="menu.js"></script>
+<script>
+    // Get the role display element
+    const roleDisplay = document.getElementById('roleDisplay');
+
+    // Check if the role is displayed as "customer"
+    if (roleDisplay.textContent.trim().toLowerCase() === 'customer') {
+        // Hide the employee bookings option
+        const employeeBookingsOption = document.getElementById('employeeBookingsOption');
+        if (employeeBookingsOption) {
+            employeeBookingsOption.style.display = 'none';
+        }
+    }
+</script>
 </body>
 </html>
