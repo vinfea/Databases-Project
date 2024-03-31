@@ -32,7 +32,11 @@ app.use(express.json());
 
 // Redirect to login page as default
 app.get('/', (req, res) => {
-  res.redirect('/login');
+  res.redirect('/login.html');
+});
+
+app.get('/login', (req, res) => {
+  res.redirect('/login.html');
 });
 
 // SET UP ROUTES FOR PAGES  --------------------------------------
@@ -40,7 +44,10 @@ app.get('/login', (req, res) => {
   res.sendFile(__dirname + '/public/login.html');
 });
 
-app.get('/', (req, res) => { 
+app.get('/login.html', (req, res) => {
+  res.sendFile(__dirname + '/public/login.html');
+});
+app.get('/findRooms', (req, res) => {
   res.sendFile(__dirname + '/public/findRooms.html');
 });
 
