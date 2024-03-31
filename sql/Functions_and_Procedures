@@ -1,0 +1,52 @@
+-- get city from address field ---
+
+DELIMITER $$
+
+CREATE FUNCTION get_city_from_address(addr VARCHAR(50))
+RETURNS VARCHAR(50)
+DETERMINISTIC
+BEGIN
+    DECLARE city VARCHAR(50);
+    SET city = SUBSTRING_INDEX(SUBSTRING_INDEX(addr, ',', -2), ',', 1);
+    RETURN TRIM(city);
+END$$
+
+DELIMITER ;
+
+-- insert range of dates in booking_dates --
+
+DELIMITER $$
+
+CREATE PROCEDURE InsertBookingDates(
+    IN in_booking_id INT,
+    IN in_hotel_id INT,
+    IN in_chain VARCHAR(255),
+    IN in_start_date DATE,
+    IN in_end_date DATE
+)
+BEGIN
+    -- Declare the variable with a different name
+    DECLARE v_current_date DATE;
+    SET v_current_date = in_start_date;
+
+    -- Create a temporary table to hold the dates
+    CREATE TEMPORARY TABLE temp_dates (
+        date DATE
+    );
+
+    -- Loop to insert dates into temporary table
+    WHILE v_current_date <= in_end_date DO
+        INSERT INTO temp_dates (date) VALUES (v_current_date);
+        SET v_current_date = DATE_ADD(v_current_date, INTERVAL 1 DAY);
+    END WHILE;
+
+    -- Insert into booking_date from temporary table
+    INSERT INTO booking_date (booking_id, hotel_id, chain, date)
+    SELECT in_booking_id, in_hotel_id, in_chain, date
+    FROM temp_dates;
+
+    -- Drop the temporary table
+    DROP TEMPORARY TABLE IF EXISTS temp_dates;
+END$$
+
+DELIMITER ;
