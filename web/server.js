@@ -237,6 +237,38 @@ app.get('/findRoom', (req, res) => {
   });
 });
 
+// Assuming 'app' is your Express app instance
+app.post('/cancelBooking', (req, res) => {
+  const { booking_id, hotel_id, chain } = req.body;
+
+  // Check if all required parameters are provided
+  if (!booking_id || !hotel_id || !chain) {
+    return res.status(400).json({ error: 'Missing parameters' });
+  }
+
+  // Update the booking_renting table
+  let sql = `
+    UPDATE booking_renting
+    SET is_renting = 'cancelled'
+    WHERE booking_id = ? AND hotel_id = ? AND chain = ?;
+  `;
+  let values = [booking_id, hotel_id, chain];
+
+  db.query(sql, values, (err, result) => {
+    if (err) {
+      console.error('Error updating booking:', err);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Booking not found or not updated' });
+    }
+
+    // Successful update
+    return res.status(200).json({ message: 'Booking cancelled successfully' });
+  });
+});
+
 
 //allows customers to book a room 
 app.post('/createBooking', (req, res) => {
