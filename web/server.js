@@ -610,6 +610,33 @@ app.get('/api/profile', (req, res) => {
   });
 });
 
+// Route to handle updating user profile
+app.post('/api/updateProfile', (req, res) => {
+  const { name, address, hotelId, chain } = req.body;
+  const username = req.session.username;
+  const role = req.session.role;
+
+  if (!username || !role) {
+      return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  const updateQuery = role === 'customer' ?
+      'UPDATE customer SET name = ?, address = ? WHERE username = ?' :
+      'UPDATE employee SET name = ?, address = ?, hotel_id = ?, chain = ? WHERE username = ?';
+
+  const updateParams = role === 'customer' ?
+      [name, address, username] :
+      [name, address, hotelId, chain, username];
+
+  db.query(updateQuery, updateParams, (err, results) => {
+      if (err) {
+          console.error('Error updating profile:', err);
+          return res.status(500).json({ error: 'Failed to update profile' });
+      }
+      return res.status(200).json({ message: 'Profile updated successfully' });
+  });
+});
+
 app.post('/api/hotels', (req, res) => {
   // SQL query to select hotel information including rating
   const query = `
