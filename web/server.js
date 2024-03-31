@@ -148,7 +148,7 @@ app.post('/login', (req, res) => {
 });
 
 //api endpoint to get filter the rooms
-app.get('/findRooms', (req, res) => {
+app.get('/findRoom', (req, res) => {
   const { startDate, endDate, capacity, hotelChain, roomView, numRooms, price, city } = req.query;
 
   // Define the base SQL query
@@ -202,6 +202,7 @@ app.get('/findRooms', (req, res) => {
       res.json(results);
   });
 });
+
 
 //allows customers to book a room 
 app.post('/createBooking', (req, res) => {
