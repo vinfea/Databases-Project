@@ -125,40 +125,30 @@ app.get('/api/aggregated-room-capacity-view', (req, res) => {
 // Hardcoded API endpoint to fetch bookings for a hotel the employee works at
 app.post('/api/getEmployeeBookings', (req, res) => {
   // Username of the logged-in employee
-  const username = 'bbrown';
+  const { username } = req.body;
 
-  // Get a connection from the pool
-  pool.getConnection((err, connection) => {
+  if (!username) {
+      return res.status(400).json({ error: 'Username is required' });
+  }
+
+  const query = `
+      SELECT br.booking_id, br.room_num, br.hotel_id, br.chain, br.customer_SSN, br.is_renting, bd.date
+      FROM booking_renting br
+      JOIN employee e ON br.hotel_id = e.hotel_id AND br.chain = e.chain
+      JOIN booking_date bd ON bd.booking_id = br.booking_id AND bd.hotel_id = br.hotel_id AND bd.chain = br.chain
+      WHERE e.username = ?;
+  `;
+
+  db.query(query, [username], (err, results) => {
       if (err) {
-          console.error('Error connecting to database:', err);
-          return res.status(500).json({ error: 'Database connection error' });
+          console.error('Error executing MySQL query:', err);
+          res.status(500).send('Internal Server Error');
+          return;
       }
+      res.json(results);
+  }
+  );
 
-      // SQL query to fetch bookings for the hotel the employee works at
-      const query = `
-          SELECT br.booking_id, br.room_num, br.hotel_id, br.chain, br.customer_SSN, br.is_renting, bd.date
-          FROM booking_renting br
-          JOIN employee e ON br.hotel_id = e.hotel_id AND br.chain = e.chain
-          JOIN booking_date bd ON bd.booking_id = br.booking_id AND bd.hotel_id = br.hotel_id AND bd.chain = br.chain
-          WHERE e.username = ?;
-      `;
-
-      // Log the SQL query
-      console.log('Executing SQL query:', query);
-
-      // Execute SQL query to fetch bookings for the hotel the employee works at
-      connection.query(query, [username], (err, results) => {
-          // Release the connection back to the pool
-          connection.release();
-
-          if (err) {
-              console.error('Error executing SQL query:', err);
-              return res.status(500).json({ error: 'Database query error' });
-          }
-
-          res.json(results);
-      });
-  });
 });
 
 
