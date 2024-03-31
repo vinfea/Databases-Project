@@ -499,8 +499,57 @@ app.get('/menu', (req, res) => {
   res.send('This is the menu page');
 });
 
+/// API endpoint to retrieve user profile data using SQL queries
+app.get('/api/profile', (req, res) => {
+  const { userType, username } = req.query;
 
-// Start the server
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  let tableName;
+  if (userType === 'employee') {
+      tableName = 'employee';
+  } else if (userType === 'customer') {
+      tableName = 'customer';
+  } else {
+      return res.status(400).send('Invalid userType');
+  }
+
+  const query = `SELECT * FROM ${tableName} WHERE username = ?`;
+  db.query(query, [username], (err, results) => {
+      if (err) {
+          console.error('Error executing MySQL query:', err);
+          return res.status(500).send('Internal Server Error');
+      }
+
+      if (results.length > 0) {
+          // User found, send profile data as HTML
+          const profileData = results[0];
+          let profileHtml = `<h1>Profile</h1>`;
+          for (const key in profileData) {
+              profileHtml += `<p><strong>${key}:</strong> ${profileData[key]}</p>`;
+          }
+          res.send(profileHtml);
+      } else {
+          // User not found
+          res.status(404).send('User not found');
+      }
+  });
+});
+
+// API endpoint to fetch hotel information using POST request
+app.post('/api/hotels', (req, res) => {
+  // SQL query to select hotel information
+  const query = `
+      SELECT h.name, h.num_rooms, h.address, h.email, hp.phone_num
+      FROM hotel h
+      INNER JOIN hotel_phone hp ON h.hotel_id = hp.hotel_id AND h.chain = hp.chain;
+  `;
+
+  // Execute the query
+  db.query(query, (err, results) => {
+      if (err) {
+          console.error('Error fetching hotel data:', err);
+          res.status(500).json({ error: 'Failed to fetch hotel data' });
+          return;
+      }
+      res.json(results); // Send hotel data as JSON response
+  });
 });

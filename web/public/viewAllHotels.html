@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View All Hotels</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h2>View All Hotels</h2>
+    <table id="hotelTable">
+        <thead>
+            <tr>
+                <th>Hotel Name</th>
+                <th>Number of Rooms</th>
+                <th>Address</th>
+                <th>Email</th>
+                <th>Phone Number</th>
+            </tr>
+        </thead>
+        <tbody id="hotelTableBody">
+            <!-- Hotel information will be dynamically added here -->
+        </tbody>
+    </table>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const response = await fetch('/api/viewAllHotels', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch hotel data');
+                }
+
+                const hotels = await response.json();
+
+                const tableBody = document.getElementById('hotelTableBody');
+                hotels.forEach(hotel => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${hotel.name}</td>
+                        <td>${hotel.num_rooms}</td>
+                        <td>${hotel.address}</td>
+                        <td>${hotel.email}</td>
+                        <td>${hotel.phone_num}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error fetching hotel data:', error);
+                alert('Failed to fetch hotel data. Please try again later.');
+            }
+        });
+    </script>
+</body>
+</html>
