@@ -45,6 +45,7 @@ app.get('/', (req, res) => {
 });
 
 
+
 // SET UP ENDPOINTS FOR CRUD APIS ----------------------------------------------
 //get all the available rooms in the city
 app.get('/api/available-rooms-per-city', (req, res) => {
@@ -56,6 +57,38 @@ app.get('/api/available-rooms-per-city', (req, res) => {
       return;
     }
     res.json(result);
+  });
+});
+
+app.post('/api/customerbookings', (req, res) => {
+  const { username } = req.body;
+
+  // Validate username
+  if (!username) {
+    return res.status(400).json({ error: 'Username is required' });
+  }
+
+  // SQL query to fetch bookings for the customer
+  const sql = `
+    SELECT booking_id, room_num, hotel_id, chain, is_renting
+    FROM booking_renting br
+    JOIN customer c ON br.customer_SSN = c.SSN 
+    WHERE c.username = ?
+  `;
+
+  db.query(sql, [username], (err, results) => {
+    if (err) {
+      console.error('Error fetching bookings:', err);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+
+    // Check if any bookings were found
+    if (results.length === 0) {
+      return res.status(404).json({ message: 'No bookings found for the user' });
+    }
+
+    // Bookings found, return as JSON
+    res.json(results);
   });
 });
 
@@ -144,6 +177,99 @@ app.get('/findRooms', (req, res) => {
   });
 });
 
+//allows customers to book a room 
+app.post('/createBooking', (req, res) => {
+  const { room_num, hotel_id, chain, customer_username, startDate, endDate } = req.body;
+
+  // Get the customer's SSN based on the provided username
+  db.query('SELECT SSN FROM customer WHERE username = ?', [customer_username], (err, results) => {
+    if (err) {
+      console.error('Error executing MySQL query:', err);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ error: 'Customer not found' });
+    }
+
+    const customer_SSN = results[0].SSN;
+
+    // Create temporary table with booking data
+    const createTempBookingTableQuery = `
+      CREATE TEMPORARY TABLE temp_booking AS
+      SELECT
+        (SELECT MAX(booking_id) 
+         FROM booking_renting
+         WHERE hotel_id = ? AND chain = ?) + 1 AS booking_id, 
+        ? AS room_num,
+        ? AS hotel_id,
+        ? AS chain,
+        ? AS customer_SSN,
+        'active' AS is_renting
+      FROM customer c
+      WHERE c.username = ?;
+    `;
+
+    // Insert data into booking_renting
+    const insertIntoBookingRentingQuery = `
+      INSERT INTO booking_renting (booking_id, room_num, hotel_id, chain, customer_SSN, is_renting)
+      SELECT booking_id, room_num, hotel_id, chain, customer_SSN, is_renting
+      FROM temp_booking;
+    `;
+
+    // Get the booking_id from the inserted row
+    const getBookingIdQuery = 'SELECT booking_id FROM temp_booking;';
+
+    // Drop the temporary table
+    const dropTempBookingTableQuery = 'DROP TEMPORARY TABLE IF EXISTS temp_booking;';
+
+    // Execute the queries
+    db.query(createTempBookingTableQuery, [hotel_id, chain, room_num, hotel_id, chain, customer_SSN, customer_username], (err) => {
+      if (err) {
+        console.error('Error creating temporary table:', err);
+        return res.status(500).json({ error: 'Internal Server Error' });
+      }
+
+      db.query(insertIntoBookingRentingQuery, (err) => {
+        if (err) {
+          console.error('Error inserting into booking_renting:', err);
+          return res.status(500).json({ error: 'Internal Server Error' });
+        }
+
+        db.query(getBookingIdQuery, (err, results) => {
+          if (err) {
+            console.error('Error getting booking_id:', err);
+            return res.status(500).json({ error: 'Internal Server Error' });
+          }
+
+          const newBookingId = results[0].booking_id;
+          console.log('New Booking ID:', newBookingId);
+
+          db.query(dropTempBookingTableQuery, (err) => {
+            if (err) {
+              console.error('Error dropping temporary table:', err);
+              return res.status(500).json({ error: 'Internal Server Error' });
+            }
+
+            // Call InsertBookingDates procedure
+            db.query(
+              'CALL InsertBookingDates(?, ?, ?, ?, ?)',
+              [newBookingId, hotel_id, chain, startDate, endDate],
+              (err) => {
+                if (err) {
+                  console.error('Error executing MySQL query:', err);
+                  return res.status(500).json({ error: 'Internal Server Error' });
+                }
+
+                res.status(200).json({ message: 'Booking created successfully', newBookingId });
+              }
+            );
+          });
+        });
+      });
+    });
+  });
+});
 
 // Menu route
 app.get('/menu', (req, res) => {

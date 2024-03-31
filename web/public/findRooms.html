@@ -37,6 +37,21 @@
                     row.append($('<td>').text(room.capacity));
                     row.append($('<td>').text(room.view));
                     row.append($('<td>').text(room.location)); 
+
+                    // Create a button to book the room
+                    let bookButton = $('<button>').text('Book');
+                    bookButton.click(function() {
+                        localStorage.setItem('roomNum', room.room_num);
+                        localStorage.setItem('hotelId', room.hotel_id);
+                        localStorage.setItem('chain', room.chain);
+                        localStorage.setItem('startDate', $('#startDate').val());
+                        localStorage.setItem('endDate', $('#endDate').val());
+                        window.location.href = 'bookRooms.html'; // Redirect to bookRoom.html
+                    });
+
+                    // Append the book button to the row
+                    row.append($('<td>').append(bookButton));
+                    
                     tableBody.append(row);
                 });
             }

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Customer Bookings</title>
+  <style>
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    th, td {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+  </style>
+</head>
+<body>
+  <h1>Customer Bookings</h1>
+
+  <div id="bookingsContainer">
+    <!-- Bookings will be displayed here -->
+  </div>
+
+  <script>
+    // Function to make AJAX request to retrieve bookings
+    function fetchBookings(username) {
+      const url = '/api/customerbookings'; // API endpoint URL
+      const data = { username: username };
+
+      // Make POST request using Fetch API
+      fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        displayBookings(data); // Display bookings on success
+      })
+      .catch(error => {
+        console.error('Error fetching bookings:', error);
+        const bookingsContainer = document.getElementById('bookingsContainer');
+        bookingsContainer.innerHTML = '<p>Error fetching bookings. Please try again later.</p>';
+      });
+    }
+
+    // Function to display bookings in HTML table
+    function displayBookings(bookings) {
+      const bookingsContainer = document.getElementById('bookingsContainer');
+      if (bookings.length === 0) {
+        bookingsContainer.innerHTML = '<p>No bookings found for the user.</p>';
+        return;
+      }
+
+      let html = '<h2>Customer Bookings:</h2>';
+      html += '<table>';
+      html += '<tr><th>Booking ID</th><th>Room Number</th><th>Hotel ID</th><th>Chain</th><th>Status</th></tr>';
+      bookings.forEach(booking => {
+        html += `<tr><td>${booking.booking_id}</td><td>${booking.room_num}</td><td>${booking.hotel_id}</td><td>${booking.chain}</td><td>${booking.is_renting}</td></tr>`;
+      });
+      html += '</table>';
+      bookingsContainer.innerHTML = html;
+    }
+
+    // Retrieve username from localStorage and fetch bookings
+    const storedUsername = localStorage.getItem('username');
+    if (storedUsername) {
+      fetchBookings(storedUsername);
+    } else {
+      const bookingsContainer = document.getElementById('bookingsContainer');
+      bookingsContainer.innerHTML = '<p>Username not found in localStorage.</p>';
+    }
+  </script>
+</body>
+</html>

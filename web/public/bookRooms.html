@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Rooms</title>
+</head>
+<body>
+    <h2>Book Rooms</h2>
+    <form id="bookRoomsForm">
+        <label for="roomNum">Room Number:</label>
+        <input type="text" id="roomNum" name="room_num" readonly>
+        <br><br>
+        <label for="hotelId">Hotel ID:</label>
+        <input type="text" id="hotelId" name="hotel_id" readonly>
+        <br><br>
+        <label for="chain">Chain:</label>
+        <input type="text" id="chain" name="chain" readonly>
+        <br><br>
+        <label for="customerUsername">Customer Username:</label>
+        <input type="text" id="customerUsername" name="customer_username">
+        <br><br>
+        <label for="startDate">Start Date:</label>
+        <input type="date" id="startDate" name="startDate" readonly>
+        <br><br>
+        <label for="endDate">End Date:</label>
+        <input type="date" id="endDate" name="endDate" readonly>
+        <br><br>
+        <input type="submit" value="Book">
+    </form>
+
+    <script>
+        // Retrieve values from local storage and fill the form
+        document.getElementById('roomNum').value = localStorage.getItem('roomNum');
+        document.getElementById('hotelId').value = localStorage.getItem('hotelId');
+        document.getElementById('chain').value = localStorage.getItem('chain');
+        document.getElementById('startDate').value = localStorage.getItem('startDate');
+        document.getElementById('endDate').value = localStorage.getItem('endDate');
+        document.getElementById('customerUsername').value = localStorage.getItem('username');
+
+        document.getElementById('bookRoomsForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            let formData = new FormData(this);
+            let jsonData = {};
+            formData.forEach((value, key) => { jsonData[key] = value; });
+
+            fetch('http://localhost:3000/createBooking', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(jsonData)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                alert('Booking created successfully');
+                console.log(data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error creating booking');
+            });
+        });
+    </script>
+</body>
+</html>
