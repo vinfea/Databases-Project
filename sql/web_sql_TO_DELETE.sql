@@ -31,6 +31,9 @@ UPDATE booking_payment
 SET cc_number = '1111222233334444', exp_date = '2024-02-12', ccv = '123'
 WHERE booking_id = 13 AND hotel_id = 7 AND chain = 'Grand Hotels'; 
 
-
+-- When a customer deletes a booking, update the is_renting field 
+UPDATE booking_renting
+SET is_renting = 'cancelled'
+WHERE booking_id = 13 AND hotel_id = 7 AND chain = 'Grand Hotels'; 
 
 
