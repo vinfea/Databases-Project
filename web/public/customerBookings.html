@@ -65,9 +65,9 @@
 
       let html = '<h2>Customer Bookings:</h2>';
       html += '<table>';
-      html += '<tr><th>Booking ID</th><th>Room Number</th><th>Hotel ID</th><th>Chain</th><th>Status</th></tr>';
+      html += '<tr><th>Booking ID</th><th>Room Number</th><th>Hotel ID</th><th>Chain</th><th>Status</th><th>Date</th></tr>';
       bookings.forEach(booking => {
-        html += `<tr><td>${booking.booking_id}</td><td>${booking.room_num}</td><td>${booking.hotel_id}</td><td>${booking.chain}</td><td>${booking.is_renting}</td></tr>`;
+        html += `<tr><td>${booking.booking_id}</td><td>${booking.room_num}</td><td>${booking.hotel_id}</td><td>${booking.chain}</td><td>${booking.is_renting}</td><td>${booking.date}</td></tr>`;
       });
       html += '</table>';
       bookingsContainer.innerHTML = html;
