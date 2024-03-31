@@ -37,6 +37,20 @@
 
     if (roleDisplay.textContent.trim().toLowerCase() === 'employee') {
         // Hide the employee bookings option
+
+        const employeeUsername = localStorage.getItem('username');
+
+        fetch('/employee/hotelinfo?username=${employeeUsername}') // Replace with actual username
+            .then(response => response.json())
+            .then(data => {
+                // Set hotel_id and chain in local storage
+                localStorage.setItem('hotel_id', data.hotelId);
+                localStorage.setItem('chain', data.chain);
+            })
+            .catch(error => {
+                console.error('Error fetching hotel info:', error);
+            });
+
         const customerBookingsOption = document.getElementById('customerBookingsOption');
         if (customerBookingsOption) {
             customerBookingsOption.style.display = 'none';
