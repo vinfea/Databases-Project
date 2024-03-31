@@ -162,3 +162,26 @@ BEGIN
 END$$
 
 DELIMITER ;
+
+-- Trigger to add record into booking_payment
+-- upon insert in booking_renting
+
+DELIMITER $$
+
+CREATE TRIGGER insert_payment_after_booking AFTER INSERT
+ON booking_renting 
+FOR EACH ROW BEGIN
+INSERT INTO booking_payment VALUES 
+(NEW.booking_id, NEW.hotel_id, NEW.chain, NULL, NULL, NULL);
+END$$
+
+DELIMITER ; 
+
+
+
+
+
+
+
+
+

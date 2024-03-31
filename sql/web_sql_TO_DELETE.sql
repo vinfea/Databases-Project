@@ -25,7 +25,11 @@ UPDATE booking_renting
 SET is_renting = 'renting'
 WHERE booking_id = 13 AND hotel_id = 7 AND chain = 'Grand Hotels'; 
 
--- 
+-- Update payment information given primary key (booking_id, hotel_id, chain)
+-- and payment information
+UPDATE booking_payment
+SET cc_number = '1111222233334444', exp_date = '2024-02-12', ccv = '123'
+WHERE booking_id = 13 AND hotel_id = 7 AND chain = 'Grand Hotels'; 
 
 
 
