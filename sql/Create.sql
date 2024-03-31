@@ -190,14 +190,13 @@ FOREIGN KEY (booking_id, hotel_id, chain) REFERENCES booking_renting(booking_id,
 ON DELETE CASCADE; 
 
 CREATE TABLE booking_payment (
-	payment_id INT, 
 	booking_id INT,
     hotel_id INT,
     chain VARCHAR(20),
     cc_number CHAR(16),
     exp_date DATE,
     ccv CHAR(3),
-    CONSTRAINT PK_booking_payment PRIMARY KEY (payment_id, booking_id, hotel_id, chain)
+    CONSTRAINT PK_booking_payment PRIMARY KEY (booking_id, hotel_id, chain)
 );
 
 ALTER TABLE booking_payment
