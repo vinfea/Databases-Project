@@ -664,30 +664,34 @@ app.get('/api/profile', (req, res) => {
 
 // Route to handle updating user profile
 app.post('/api/updateProfile', (req, res) => {
-  const { name, address, hotelId, chain } = req.body;
-  const username = req.session.username;
-  const role = req.session.role;
+  const { name, address, hotelId, chain, username, role } = req.body;
 
+  // Check if username and role are provided
   if (!username || !role) {
-      return res.status(401).json({ error: 'Unauthorized' });
+    return res.status(401).json({ error: 'Unauthorized' });
   }
 
-  const updateQuery = role === 'customer' ?
-      'UPDATE customer SET name = ?, address = ? WHERE username = ?' :
-      'UPDATE employee SET name = ?, address = ?, hotel_id = ?, chain = ? WHERE username = ?';
+  let updateQuery, updateParams;
 
-  const updateParams = role === 'customer' ?
-      [name, address, username] :
-      [name, address, hotelId, chain, username];
+  if (role === 'customer') {
+    updateQuery = 'UPDATE customer SET name = ?, address = ? WHERE username = ?';
+    updateParams = [name, address, username];
+  } else if (role === 'employee') {
+    updateQuery = 'UPDATE employee SET name = ?, address = ?, hotel_id = ?, chain = ? WHERE username = ?';
+    updateParams = [name, address, hotelId, chain, username];
+  } else {
+    return res.status(400).json({ error: 'Invalid role' });
+  }
 
   db.query(updateQuery, updateParams, (err, results) => {
-      if (err) {
-          console.error('Error updating profile:', err);
-          return res.status(500).json({ error: 'Failed to update profile' });
-      }
-      return res.status(200).json({ message: 'Profile updated successfully' });
+    if (err) {
+      console.error('Error updating profile:', err);
+      return res.status(500).json({ error: 'Failed to update profile' });
+    }
+    return res.status(200).json({ message: 'Profile updated successfully' });
   });
 });
+
 
 app.post('/api/hotels', (req, res) => {
   // SQL query to select hotel information including rating
