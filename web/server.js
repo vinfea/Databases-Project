@@ -23,6 +23,10 @@ db.connect((err) => {
   }
   console.log('MySQL Connected...');
 });
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
+});
+
 
 // Serve static files from the 'public' folder
 app.use(express.static('public'));
@@ -610,7 +614,7 @@ app.get('/api/profile', (req, res) => {
 app.post('/api/hotels', (req, res) => {
   // SQL query to select hotel information
   const query = `
-      SELECT h.name, h.num_rooms, h.address, h.email, hp.phone_num
+      SELECT h.hotel_id, h.chain, h.num_rooms, h.address, h.email, hp.phone_num
       FROM hotel h
       INNER JOIN hotel_phone hp ON h.hotel_id = hp.hotel_id AND h.chain = hp.chain;
   `;

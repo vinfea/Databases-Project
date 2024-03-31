@@ -26,7 +26,8 @@
     <table id="hotelTable">
         <thead>
             <tr>
-                <th>Hotel Name</th>
+                <th>Hotel ID</th>
+                <th>Chain</th>
                 <th>Number of Rooms</th>
                 <th>Address</th>
                 <th>Email</th>
@@ -39,9 +40,9 @@
     </table>
 
     <script>
-        document.addEventListener('DOMContentLoaded', async () => {
+        async function fetchHotels() {
             try {
-                const response = await fetch('/api/viewAllHotels', {
+                const response = await fetch('/api/hotels', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -58,7 +59,8 @@
                 hotels.forEach(hotel => {
                     const row = document.createElement('tr');
                     row.innerHTML = `
-                        <td>${hotel.name}</td>
+                        <td>${hotel.hotel_id}</td>
+                        <td>${hotel.chain}</td>
                         <td>${hotel.num_rooms}</td>
                         <td>${hotel.address}</td>
                         <td>${hotel.email}</td>
@@ -70,7 +72,9 @@
                 console.error('Error fetching hotel data:', error);
                 alert('Failed to fetch hotel data. Please try again later.');
             }
-        });
+        }
+
+        document.addEventListener('DOMContentLoaded', fetchHotels);
     </script>
 </body>
 </html>
