@@ -72,7 +72,7 @@
                                 <td id="exp-date-${booking.booking_id}">${expWithoutTime}</td>
                                 <td id="ccv-${booking.booking_id}">${booking.ccv}</td>
                                 <td><button onclick="updatePaymentInfo(${booking.booking_id}, ${booking.hotel_id}, '${booking.chain}')">Update Payment</button>
-                                <button onclick="deleteBooking(${booking.booking_id})">Delete</button></td>
+                                <button onclick="deleteBooking(${booking.booking_id}, ${booking.hotel_id}, '${booking.chain}')">Delete</button></td>
 
                                 </tr>`;
                 });

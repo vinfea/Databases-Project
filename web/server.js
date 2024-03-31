@@ -188,8 +188,15 @@ app.delete('/api/deleteBooking', (req, res) => {
           return res.status(500).json({ error: 'Failed to delete booking.' });
       }
 
+      // Check if any rows were affected (if a booking was actually deleted)
+      if (result.affectedRows > 0) {
+        return res.json({ message: 'Booking deleted successfully.' });
+      } else {
+        return res.status(404).json({ error: 'Booking not found or already deleted.' });
+      }
+
       // Fetch updated list of bookings
-      const username = req.body.username; // Assuming username is also sent in the request
+      /*const username = req.body.username; // Assuming username is also sent in the request
       fetchBookings(username)
           .then(updatedBookings => {
               res.json({ message: 'Booking deleted successfully.', bookings: updatedBookings });
@@ -197,7 +204,7 @@ app.delete('/api/deleteBooking', (req, res) => {
           .catch(error => {
               console.error('Error fetching updated bookings:', error);
               res.status(500).json({ error: 'Failed to fetch updated bookings.' });
-          });
+          });*/
   });
 });
 
