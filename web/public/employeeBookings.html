@@ -54,22 +54,100 @@
             const bookingsContainer = document.getElementById('bookingsContainer');
             if (bookings && bookings.length > 0) {
                 let html = '<table>';
-                html += '<tr><th>Booking ID</th><th>Room Number</th><th>Hotel ID</th><th>Chain</th><th>Customer SSN</th><th>Is Renting</th><th>Date</th></tr>';
+                html += '<tr><th>Booking ID</th><th>Room Number</th><th>Hotel ID</th><th>Chain</th><th>Customer SSN</th><th>Is Renting</th><th>Date</th><th>CC Number</th><th>Exp Date</th><th>CCV</th><th>Actions</th></tr>';
                 bookings.forEach(booking => {
-                    html += `<tr>
+                    const dateWithoutTime = new Date(booking.date).toISOString().split('T')[0];
+                    const expWithoutTime = new Date(booking.exp_date).toISOString().split('T')[0];
+
+
+                    html += `<tr id="booking-${booking.booking_id}">
                                 <td>${booking.booking_id}</td>
                                 <td>${booking.room_num}</td>
                                 <td>${booking.hotel_id}</td>
                                 <td>${booking.chain}</td>
                                 <td>${booking.customer_SSN}</td>
                                 <td>${booking.is_renting}</td>
-                                <td>${booking.date}</td>
-                            </tr>`;
+                                <td>${dateWithoutTime}</td>
+                                <td id="cc-number-${booking.booking_id}">${booking.cc_number}</td>
+                                <td id="exp-date-${booking.booking_id}">${expWithoutTime}</td>
+                                <td id="ccv-${booking.booking_id}">${booking.ccv}</td>
+                                <td><button onclick="updatePaymentInfo(${booking.booking_id}, ${booking.hotel_id}, '${booking.chain}')">Update Payment</button>
+                                <button onclick="deleteBooking(${booking.booking_id})">Delete</button></td>
+
+                                </tr>`;
                 });
                 html += '</table>';
                 bookingsContainer.innerHTML = html;
             } else {
                 bookingsContainer.innerHTML = '<p>No bookings found for this employee.</p>';
+            }
+        }
+
+        function updatePaymentInfo(bookingId, hotelId, chain) {
+            const newCCNumber = prompt('Enter new credit card number:');
+            const newExpDate = prompt('Enter new expiry date (YYYY-MM-DD):');
+            const newCCV = prompt('Enter new CCV:');
+
+            if (newCCNumber && newExpDate && newCCV) {
+                // Send request to backend API to update payment info
+                fetch('/api/updatePaymentInfo', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        bookingId: bookingId,
+                        hotelId: hotelId,
+                        chain: chain,
+                        cc_number: newCCNumber,
+                        exp_date: newExpDate,
+                        ccv: newCCV
+                    })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to update payment info.');
+                    }
+                    // Update payment info in the table
+                    document.getElementById(`cc-number-${bookingId}`).textContent = newCCNumber;
+                    document.getElementById(`exp-date-${bookingId}`).textContent = newExpDate;
+                    document.getElementById(`ccv-${bookingId}`).textContent = newCCV;
+                    // Handle success
+                    alert('Payment info updated successfully.');
+                })
+                .catch(error => {
+                    console.error('Error updating payment info:', error.message);
+                    alert('Failed to update payment info. Please try again later.');
+                });
+            }
+        }
+
+        function deleteBooking(bookingId) {
+            if (confirm('Are you sure you want to delete this booking?')) {
+                // Send request to backend API to delete booking
+                fetch('/api/deleteBooking', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ bookingId: bookingId })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to delete booking.');
+                    }
+                    // Remove the booking row from the table
+                    const bookingRow = document.getElementById(`booking-${bookingId}`);
+                    if (bookingRow) {
+                        bookingRow.remove();
+                    }
+                    // Handle success
+                    alert('Booking deleted successfully.');
+                })
+                .catch(error => {
+                    console.error('Error deleting booking:', error.message);
+                    alert('Failed to delete booking. Please try again later.');
+                });
             }
         }
 

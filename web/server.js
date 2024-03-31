@@ -132,10 +132,11 @@ app.post('/api/getEmployeeBookings', (req, res) => {
   }
 
   const query = `
-      SELECT br.booking_id, br.room_num, br.hotel_id, br.chain, br.customer_SSN, br.is_renting, bd.date
+      SELECT br.booking_id, br.room_num, br.hotel_id, br.chain, br.customer_SSN, br.is_renting, bd.date, bp.cc_number, bp.exp_date, bp.ccv
       FROM booking_renting br
       JOIN employee e ON br.hotel_id = e.hotel_id AND br.chain = e.chain
       JOIN booking_date bd ON bd.booking_id = br.booking_id AND bd.hotel_id = br.hotel_id AND bd.chain = br.chain
+      LEFT JOIN booking_payment bp ON bp.booking_id = br.booking_id AND bp.hotel_id = br.hotel_id AND bp.chain = br.chain
       WHERE e.username = ?;
   `;
 
@@ -149,6 +150,45 @@ app.post('/api/getEmployeeBookings', (req, res) => {
   }
   );
 
+});
+// API endpoint to update payment info
+app.post('/api/updatePaymentInfo', (req, res) => {
+  const { bookingId, hotelId, chain, cc_number, exp_date, ccv } = req.body;
+
+  // Update payment info in the database
+  const query = `
+      UPDATE booking_payment
+      SET cc_number = ?, exp_date = ?, ccv = ?
+      WHERE booking_id = ? AND hotel_id = ? AND chain = ?
+  `;
+  const values = [cc_number, exp_date, ccv, bookingId, hotelId, chain];
+
+  db.query(query, values, (err, result) => {
+      if (err) {
+          console.error('Error updating payment info:', err);
+          return res.status(500).json({ error: 'Failed to update payment info.' });
+      }
+      res.json({ message: 'Payment info updated successfully.' });
+  });
+});
+
+app.delete('/api/deleteBooking', (req, res) => {
+  const { bookingId, hotelId, chain } = req.body;
+
+  // Delete the booking from the database
+  const query = `
+      DELETE FROM booking_renting
+      WHERE booking_id = ? AND hotel_id = ? AND chain = ?
+  `;
+  const values = [bookingId, hotelId, chain];
+
+  db.query(query, values, (err, result) => {
+      if (err) {
+          console.error('Error deleting booking:', err);
+          return res.status(500).json({ error: 'Failed to delete booking.' });
+      }
+      res.json({ message: 'Booking deleted successfully.' });
+  });
 });
 
 
