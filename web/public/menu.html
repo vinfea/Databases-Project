@@ -20,7 +20,8 @@
         <li id="employeeBookingsOption"><a href="employeeBookings.html">See Customer Bookings</a></li>
         <li id="employeeBookingsOption"><a href="currentCustomers.html">Current Customers</a></li>
         <li><a href=viewAllHotels.html>View All Hotels</a></li>
-        <li><a href="employeeAvailableRooms.html">Customer Direct Booking</a></li>   
+        <li><a href="employeeAvailableRooms.html">Customer Direct Booking</a></li>  
+        <li><a href="#" id="logout">Logout</a></li>  
 
     </ul>
 
@@ -28,6 +29,13 @@
 <script>
     // Get the role display element
     const roleDisplay = document.getElementById('roleDisplay');
+    const usernameDisplay = document.getElementById('usernameDisplay');
+
+        // Check if the role and username are present
+        if (!roleDisplay.textContent.trim() || !usernameDisplay.textContent.trim()) {
+            // Redirect to login.html
+            window.location.href = 'login.html';
+        }
 
     // Check if the role is displayed as "customer"
     if (roleDisplay.textContent.trim().toLowerCase() === 'customer') {
@@ -60,6 +68,14 @@
             customerBookingsOption.style.display = 'none';
         }
     }
+
+    const logoutLink = document.getElementById('logout');
+        logoutLink.addEventListener('click', function() {
+            localStorage.removeItem('username');
+            localStorage.removeItem('password');
+            // Redirect to login.html after logout
+            window.location.href = 'login.html';
+        });
 </script>
 </body>
 </html>
