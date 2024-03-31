@@ -610,11 +610,10 @@ app.get('/api/profile', (req, res) => {
   });
 });
 
-// API endpoint to fetch hotel information using POST request
 app.post('/api/hotels', (req, res) => {
-  // SQL query to select hotel information
+  // SQL query to select hotel information including rating
   const query = `
-      SELECT h.hotel_id, h.chain, h.num_rooms, h.address, h.email, hp.phone_num
+      SELECT h.hotel_id, h.chain, h.num_rooms, h.address, h.email, hp.phone_num, h.rating
       FROM hotel h
       INNER JOIN hotel_phone hp ON h.hotel_id = hp.hotel_id AND h.chain = hp.chain;
   `;
@@ -629,3 +628,4 @@ app.post('/api/hotels', (req, res) => {
       res.json(results); // Send hotel data as JSON response
   });
 });
+
