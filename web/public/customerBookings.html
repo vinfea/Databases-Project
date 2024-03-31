@@ -51,7 +51,7 @@
       .catch(error => {
         console.error('Error fetching bookings:', error);
         const bookingsContainer = document.getElementById('bookingsContainer');
-        bookingsContainer.innerHTML = '<p>Error fetching bookings. Please try again later.</p>';
+        bookingsContainer.innerHTML = '<p>No bookings.</p>';
       });
     }
 
@@ -65,14 +65,61 @@
 
       let html = '<h2>Customer Bookings:</h2>';
       html += '<table>';
-      html += '<tr><th>Booking ID</th><th>Room Number</th><th>Hotel ID</th><th>Chain</th><th>Status</th><th>Date</th></tr>';
+      html += '<tr><th>Booking ID</th><th>Room Number</th><th>Hotel ID</th><th>Chain</th><th>Status</th><th>Date</th><th>Action</th></tr>';
       bookings.forEach(booking => {
         // Parse out the time and display only the date
         const dateWithoutTime = new Date(booking.date).toISOString().split('T')[0];
-        html += `<tr><td>${booking.booking_id}</td><td>${booking.room_num}</td><td>${booking.hotel_id}</td><td>${booking.chain}</td><td>${booking.is_renting}</td><td>${dateWithoutTime}</td></tr>`;
+        html += `<tr>
+                   <td>${booking.booking_id}</td>
+                   <td>${booking.room_num}</td>
+                   <td>${booking.hotel_id}</td>
+                   <td>${booking.chain}</td>
+                   <td>${booking.is_renting}</td>
+                   <td>${dateWithoutTime}</td>
+                   <td><button onclick="cancelBooking(${booking.booking_id}, ${booking.hotel_id}, '${booking.chain}')">Cancel</button></td>
+                 </tr>`;
       });
       html += '</table>';
       bookingsContainer.innerHTML = html;
+    }
+
+    // Function to cancel booking
+    function cancelBooking(booking_id, hotel_id, chain) {
+      const url = 'http://localhost:3000/cancelBooking'; //see if this actually replaces the right link
+      const data = {
+        booking_id: booking_id,
+        hotel_id: hotel_id,
+        chain: chain
+      };
+
+      fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        alert(data.message); // Show success message
+        // Refresh bookings after cancellation
+        const storedUsername = localStorage.getItem('username');
+        if (storedUsername) {
+          fetchBookings(storedUsername);
+        } else {
+          const bookingsContainer = document.getElementById('bookingsContainer');
+          bookingsContainer.innerHTML = '<p>Username not found in localStorage.</p>';
+        }
+      })
+      .catch(error => {
+        console.error('Error cancelling booking:', error);
+        alert('Error cancelling booking. Please try again later.');
+      });
     }
 
     // Retrieve username from localStorage and fetch bookings

@@ -13,7 +13,7 @@
                 let formData = $(this).serialize();
                 $.ajax({
                     type: 'GET',
-                    url: '/findRooms',
+                    url: '/findRoom',
                     data: formData,
                     success: function(response) {
                         console.log('Success:', response); // Log success response

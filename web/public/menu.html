@@ -6,18 +6,58 @@
 </head>
 <body>
     <h2>Menu</h2>
+
     <!-- Your menu options here -->
 
     <h4>Welcome <span id="usernameDisplay"></span>! You are logged in as a <span id="roleDisplay"></span>.</h4>
 
     <ul>
-        <li><a href="#">Option 1</a></li>
-        <li><a href="availableRooms.html">Available Rooms Per City</a></li>
-        <li><a href="hotelCapacity.html">Room Capacity Per Hotel</a></li>
+        <li><a href="availableRooms.html">View 1: Available Rooms Per City</a></li>
+        <li><a href="hotelCapacity.html">View 2: Room Capacity Per Hotel</a></li>
         <li><a href="findRooms.html">Find Rooms</a></li>
-        <li><a href="customerBookings.html">Customer Bookings</a></li>
+        <li id = "customerBookingsOption"><a href="customerBookings.html">My Bookings</a></li>
+        <li id="employeeBookingsOption"><a href="employeeBookings.html">See Customer Bookings</a></li>
+        <li id="employeeBookingsOption"><a href="currentCustomers.html">Current Customers</a></li>
+        <li><a href="employeeAvailableRooms.html">Customer Direct Booking</a></li>   
+
     </ul>
 
 <script src="menu.js"></script>
+<script>
+    // Get the role display element
+    const roleDisplay = document.getElementById('roleDisplay');
+
+    // Check if the role is displayed as "customer"
+    if (roleDisplay.textContent.trim().toLowerCase() === 'customer') {
+        // Hide the employee bookings option
+        const employeeBookingsOption = document.getElementById('employeeBookingsOption');
+        if (employeeBookingsOption) {
+            employeeBookingsOption.style.display = 'none';
+        }
+    }
+
+    if (roleDisplay.textContent.trim().toLowerCase() === 'employee') {
+        // Hide the employee bookings option
+
+        const employeeUsername = localStorage.getItem('username');
+        console.log("user name", employeeUsername);
+
+        fetch(`/employee/hotelinfo?username=${employeeUsername}`) // Replace with actual username
+            .then(response => response.json())
+            .then(data => {
+                // Set hotel_id and chain in local storage
+                localStorage.setItem('hotel_id', data.hotelId);
+                localStorage.setItem('chain', data.chain);
+            })
+            .catch(error => {
+                console.error('Error fetching hotel info:', error);
+            });
+
+        const customerBookingsOption = document.getElementById('customerBookingsOption');
+        if (customerBookingsOption) {
+            customerBookingsOption.style.display = 'none';
+        }
+    }
+</script>
 </body>
 </html>

@@ -55,6 +55,13 @@ app.get('/hotelCapacity', (req, res) => {
   res.sendFile(__dirname + '/public/hotelCapacity.html');
 });
 
+app.get('/employeeBookings', (req, res) => {
+  res.sendFile(__dirname + '/public/employeeBookings.html');
+});
+
+app.get('/employeeAvailableRooms', (req, res) => {
+  res.sendFile(__dirname + '/public/employeeAvailableRooms.html');
+});
 
 // SET UP ENDPOINTS FOR CRUD APIS ----------------------------------------------
 //get all the available rooms in the city
@@ -118,6 +125,166 @@ app.get('/api/aggregated-room-capacity-view', (req, res) => {
   });
 });
 
+// Hardcoded API endpoint to fetch bookings for a hotel the employee works at
+app.post('/api/getEmployeeBookings', (req, res) => {
+  // Username of the logged-in employee
+  const { username } = req.body;
+
+  if (!username) {
+      return res.status(400).json({ error: 'Username is required' });
+  }
+
+  const query = `
+      SELECT br.booking_id, br.room_num, br.hotel_id, br.chain, br.customer_SSN, br.is_renting, bd.date, bp.cc_number, bp.exp_date, bp.ccv
+      FROM booking_renting br
+      JOIN employee e ON br.hotel_id = e.hotel_id AND br.chain = e.chain
+      JOIN booking_date bd ON bd.booking_id = br.booking_id AND bd.hotel_id = br.hotel_id AND bd.chain = br.chain
+      LEFT JOIN booking_payment bp ON bp.booking_id = br.booking_id AND bp.hotel_id = br.hotel_id AND bp.chain = br.chain
+      WHERE e.username = ?;
+  `;
+
+  db.query(query, [username], (err, results) => {
+      if (err) {
+          console.error('Error executing MySQL query:', err);
+          res.status(500).send('Internal Server Error');
+          return;
+      }
+      res.json(results);
+  }
+  );
+
+});
+// API endpoint to update payment info
+app.post('/api/updatePaymentInfo', (req, res) => {
+  const { bookingId, hotelId, chain, cc_number, exp_date, ccv } = req.body;
+
+  // Update payment info in the database
+  const query = `
+      UPDATE booking_payment
+      SET cc_number = ?, exp_date = ?, ccv = ?
+      WHERE booking_id = ? AND hotel_id = ? AND chain = ?
+  `;
+  const values = [cc_number, exp_date, ccv, bookingId, hotelId, chain];
+
+  db.query(query, values, (err, result) => {
+      if (err) {
+          console.error('Error updating payment info:', err);
+          return res.status(500).json({ error: 'Failed to update payment info.' });
+      }
+      res.json({ message: 'Payment info updated successfully.' });
+  });
+});
+
+app.delete('/api/deleteBooking', (req, res) => {
+  const { bookingId, hotelId, chain } = req.body;
+
+  // Delete the booking from the database
+  const query = `
+      DELETE FROM booking_renting
+      WHERE booking_id = ? AND hotel_id = ? AND chain = ?
+  `;
+  const values = [bookingId, hotelId, chain];
+
+  db.query(query, values, (err, result) => {
+      if (err) {
+          console.error('Error deleting booking:', err);
+          return res.status(500).json({ error: 'Failed to delete booking.' });
+      }
+
+      // Check if any rows were affected (if a booking was actually deleted)
+      if (result.affectedRows > 0) {
+        return res.json({ message: 'Booking deleted successfully.' });
+      } else {
+        return res.status(404).json({ error: 'Booking not found or already deleted.' });
+      }
+
+      // Fetch updated list of bookings
+      /*const username = req.body.username; // Assuming username is also sent in the request
+      fetchBookings(username)
+          .then(updatedBookings => {
+              res.json({ message: 'Booking deleted successfully.', bookings: updatedBookings });
+          })
+          .catch(error => {
+              console.error('Error fetching updated bookings:', error);
+              res.status(500).json({ error: 'Failed to fetch updated bookings.' });
+          });*/
+  });
+});
+
+
+app.post('/api/updateBookingStatus', (req, res) => {
+  const { bookingId, hotelId, chain } = req.body;
+
+  // Validate input parameters
+  if (!bookingId || !hotelId || !chain) {
+    return res.status(400).json({ error: 'Missing required parameters' });
+  }
+
+  // Update the booking status in the database
+  const query = `
+    UPDATE booking_renting
+    SET is_renting = 'renting'
+    WHERE booking_id = ? AND hotel_id = ? AND chain = ?
+  `;
+  const values = [bookingId, hotelId, chain];
+
+  db.query(query, values, (err, result) => {
+    if (err) {
+      console.error('Error updating booking status:', err);
+      return res.status(500).json({ error: 'Failed to update booking status' });
+    }
+    // Check if any rows were affected by the update
+    if (result && result.affectedRows === 0) { // Added result guard
+      return res.status(404).json({ error: 'Booking not found' });
+    }
+    res.json({ message: 'Booking status updated successfully' });
+  });
+});
+
+// Endpoint to retrieve customers at the employee's hotel
+app.get('/api/currentCustomers', (req, res) => {
+  const { employeeUsername } = req.query;
+
+  // Query to retrieve hotel information where the employee works
+  const employeeHotelQuery = `
+      SELECT hotel_id, chain
+      FROM employee
+      WHERE username = ?
+  `;
+
+  db.query(employeeHotelQuery, [employeeUsername], (err, results) => {
+      if (err) {
+          console.error('Error fetching employee hotel information:', err);
+          return res.status(500).json({ error: 'Failed to fetch employee hotel information' });
+      }
+
+      if (results.length === 0) {
+          return res.status(404).json({ error: 'Employee not found' });
+      }
+
+      const { hotel_id, chain } = results[0];
+
+      // Query to retrieve customers at the employee's hotel
+      const customerQuery = `
+          SELECT c.*, e.username
+          FROM customer c
+          JOIN booking_renting br ON c.SSN = br.customer_SSN
+          JOIN employee e ON br.hotel_id = e.hotel_id AND br.chain = e.chain
+          WHERE e.username = ?
+      `;
+
+      db.query(customerQuery, [employeeUsername], (err, customerResults) => {
+          if (err) {
+              console.error('Error fetching customers:', err);
+              return res.status(500).json({ error: 'Failed to fetch customers' });
+          }
+          res.json(customerResults);
+      });
+  });
+});
+
+
+
 //login api endpoint
 app.post('/login', (req, res) => {
   const { userType, username, password } = req.body;
@@ -148,7 +315,7 @@ app.post('/login', (req, res) => {
 });
 
 //api endpoint to get filter the rooms
-app.get('/findRooms', (req, res) => {
+app.get('/findRoom', (req, res) => {
   const { startDate, endDate, capacity, hotelChain, roomView, numRooms, price, city } = req.query;
 
   // Define the base SQL query
@@ -203,6 +370,39 @@ app.get('/findRooms', (req, res) => {
   });
 });
 
+// Assuming 'app' is your Express app instance
+app.post('/cancelBooking', (req, res) => {
+  const { booking_id, hotel_id, chain } = req.body;
+
+  // Check if all required parameters are provided
+  if (!booking_id || !hotel_id || !chain) {
+    return res.status(400).json({ error: 'Missing parameters' });
+  }
+
+  // Update the booking_renting table
+  let sql = `
+    UPDATE booking_renting
+    SET is_renting = 'cancelled'
+    WHERE booking_id = ? AND hotel_id = ? AND chain = ?;
+  `;
+  let values = [booking_id, hotel_id, chain];
+
+  db.query(sql, values, (err, result) => {
+    if (err) {
+      console.error('Error updating booking:', err);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Booking not found or not updated' });
+    }
+
+    // Successful update
+    return res.status(200).json({ message: 'Booking cancelled successfully' });
+  });
+});
+
+
 //allows customers to book a room 
 app.post('/createBooking', (req, res) => {
   const { room_num, hotel_id, chain, customer_username, startDate, endDate } = req.body;
@@ -222,19 +422,17 @@ app.post('/createBooking', (req, res) => {
 
     // Create temporary table with booking data
     const createTempBookingTableQuery = `
-      CREATE TEMPORARY TABLE temp_booking AS
-      SELECT
-        (SELECT MAX(booking_id) 
-         FROM booking_renting
-         WHERE hotel_id = ? AND chain = ?) + 1 AS booking_id, 
-        ? AS room_num,
-        ? AS hotel_id,
-        ? AS chain,
-        ? AS customer_SSN,
-        'active' AS is_renting
-      FROM customer c
-      WHERE c.username = ?;
-    `;
+    CREATE TEMPORARY TABLE temp_booking AS
+    SELECT
+      IFNULL((SELECT MAX(booking_id) FROM booking_renting WHERE hotel_id = ? AND chain = ?), 0) + 1 AS booking_id, 
+      ? AS room_num,
+      ? AS hotel_id,
+      ? AS chain,
+      ? AS customer_SSN,
+      'active' AS is_renting
+    FROM customer c
+    WHERE c.username = ?;
+  `;
 
     // Insert data into booking_renting
     const insertIntoBookingRentingQuery = `
@@ -296,6 +494,75 @@ app.post('/createBooking', (req, res) => {
     });
   });
 });
+
+
+//gets employees hotel_id and chain
+app.get('/employee/hotelinfo', (req, res) => {
+  const { username } = req.query;
+
+  if (!username) {
+    return res.status(400).json({ error: 'Username parameter is required' });
+  }
+
+  const getHotelIdAndChainQuery = `
+    SELECT hotel_id, chain
+    FROM employee
+    WHERE username = ?;
+  `;
+
+  db.query(getHotelIdAndChainQuery, [username], (err, results) => {
+    if (err) {
+      console.error('Error getting hotel_id and chain:', err);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+
+    if (results.length === 0) {
+      // No employee found with the provided username
+      return res.status(404).json({ error: 'Employee not found' });
+    }
+
+    const hotelId = results[0].hotel_id;
+    const chain = results[0].chain;
+
+    // Return the hotel_id and chain in the response
+    res.json({ hotelId, chain });
+  });
+});
+
+//gets available rooms for hotel employee 
+app.get('/available-rooms', (req, res) => {
+  const { hotel_id, chain, startDate, endDate, capacity, view, maxPrice } = req.query;
+
+  // Construct the SQL query based on filters
+  let sql = `
+    SELECT *
+    FROM room
+    WHERE hotel_id = ? AND chain = ? AND capacity >= ? AND view = ? AND price <= ? 
+    AND NOT EXISTS (
+      SELECT 1
+      FROM booking_renting br
+      JOIN booking_date bd ON br.booking_id = bd.booking_id
+      WHERE br.hotel_id = room.hotel_id AND br.chain = room.chain
+      AND bd.date BETWEEN ? AND ?
+      AND br.is_renting IN ('active', 'renting')
+      AND br.room_num = room.room_num
+    )
+  `;
+
+  const params = [hotel_id, chain, capacity, view, maxPrice, startDate, endDate];
+
+  // Execute the query
+  db.query(sql, params, (err, results) => {
+    if (err) {
+      console.error('Error fetching available rooms:', err);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+
+    // Return the results
+    res.json(results);
+  });
+});
+
 
 // Menu route
 app.get('/menu', (req, res) => {
