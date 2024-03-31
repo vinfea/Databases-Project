@@ -74,38 +74,6 @@ app.get('/api/available-rooms-per-city', (req, res) => {
   });
 });
 
-app.post('/api/customerbooking', (req, res) => {
-  const { username } = req.body;
-
-  // Validate username
-  if (!username) {
-    return res.status(400).json({ error: 'Username is required' });
-  }
-
-  // SQL query to fetch bookings for the customer
-  const sql = `
-    SELECT booking_id, room_num, hotel_id, chain, is_renting
-    FROM booking_renting br
-    JOIN customer c ON br.customer_SSN = c.SSN 
-    WHERE c.username = ?
-  `;
-
-  db.query(sql, [username], (err, results) => {
-    if (err) {
-      console.error('Error fetching bookings:', err);
-      return res.status(500).json({ error: 'Internal server error' });
-    }
-
-    // Check if any bookings were found
-    if (results.length === 0) {
-      return res.status(404).json({ message: 'No bookings found for the user' });
-    }
-
-    // Bookings found, return as JSON
-    res.json(results);
-  });
-});
-
 app.post('/api/customerbookings', (req, res) => {
   const { username } = req.body;
 
@@ -138,7 +106,6 @@ app.post('/api/customerbookings', (req, res) => {
     res.json(results);
   });
 });
-
 
 //get all aggregated room capacity in all hotel chains
 app.get('/api/aggregated-room-capacity-view', (req, res) => {

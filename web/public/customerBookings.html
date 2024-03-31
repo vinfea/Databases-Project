@@ -67,7 +67,9 @@
       html += '<table>';
       html += '<tr><th>Booking ID</th><th>Room Number</th><th>Hotel ID</th><th>Chain</th><th>Status</th><th>Date</th></tr>';
       bookings.forEach(booking => {
-        html += `<tr><td>${booking.booking_id}</td><td>${booking.room_num}</td><td>${booking.hotel_id}</td><td>${booking.chain}</td><td>${booking.is_renting}</td><td>${booking.date}</td></tr>`;
+        // Parse out the time and display only the date
+        const dateWithoutTime = new Date(booking.date).toISOString().split('T')[0];
+        html += `<tr><td>${booking.booking_id}</td><td>${booking.room_num}</td><td>${booking.hotel_id}</td><td>${booking.chain}</td><td>${booking.is_renting}</td><td>${dateWithoutTime}</td></tr>`;
       });
       html += '</table>';
       bookingsContainer.innerHTML = html;
