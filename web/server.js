@@ -63,6 +63,10 @@ app.get('/employeeAvailableRooms', (req, res) => {
   res.sendFile(__dirname + '/public/employeeAvailableRooms.html');
 });
 
+app.get('/directBooking.html', (req, res) => {
+  res.sendFile(__dirname + '/public/directBooking.html');
+});
+
 // SET UP ENDPOINTS FOR CRUD APIS ----------------------------------------------
 //get all the available rooms in the city
 app.get('/api/available-rooms-per-city', (req, res) => {
@@ -283,8 +287,6 @@ app.get('/api/currentCustomers', (req, res) => {
   });
 });
 
-
-
 //login api endpoint
 app.post('/login', (req, res) => {
   const { userType, username, password } = req.body;
@@ -403,7 +405,7 @@ app.post('/cancelBooking', (req, res) => {
 });
 
 
-//allows customers to book a room 
+//allows customers to book a room OG
 app.post('/createBooking', (req, res) => {
   const { room_num, hotel_id, chain, customer_username, startDate, endDate } = req.body;
 
@@ -420,79 +422,105 @@ app.post('/createBooking', (req, res) => {
 
     const customer_SSN = results[0].SSN;
 
-    // Create temporary table with booking data
-    const createTempBookingTableQuery = `
-    CREATE TEMPORARY TABLE temp_booking AS
-    SELECT
-      IFNULL((SELECT MAX(booking_id) FROM booking_renting WHERE hotel_id = ? AND chain = ?), 0) + 1 AS booking_id, 
-      ? AS room_num,
-      ? AS hotel_id,
-      ? AS chain,
-      ? AS customer_SSN,
-      'active' AS is_renting
-    FROM customer c
-    WHERE c.username = ?;
-  `;
-
-    // Insert data into booking_renting
-    const insertIntoBookingRentingQuery = `
-      INSERT INTO booking_renting (booking_id, room_num, hotel_id, chain, customer_SSN, is_renting)
-      SELECT booking_id, room_num, hotel_id, chain, customer_SSN, is_renting
-      FROM temp_booking;
-    `;
-
-    // Get the booking_id from the inserted row
-    const getBookingIdQuery = 'SELECT booking_id FROM temp_booking;';
-
-    // Drop the temporary table
-    const dropTempBookingTableQuery = 'DROP TEMPORARY TABLE IF EXISTS temp_booking;';
-
-    // Execute the queries
-    db.query(createTempBookingTableQuery, [hotel_id, chain, room_num, hotel_id, chain, customer_SSN, customer_username], (err) => {
-      if (err) {
-        console.error('Error creating temporary table:', err);
-        return res.status(500).json({ error: 'Internal Server Error' });
-      }
-
-      db.query(insertIntoBookingRentingQuery, (err) => {
+    // Get the next available booking_id
+    db.query(
+      'SELECT IFNULL(MAX(booking_id), 0) + 1 AS next_booking_id FROM booking_renting WHERE hotel_id = ? AND chain = ?',
+      [hotel_id, chain],
+      (err, result) => {
         if (err) {
-          console.error('Error inserting into booking_renting:', err);
+          console.error('Error getting next booking_id:', err);
           return res.status(500).json({ error: 'Internal Server Error' });
         }
 
-        db.query(getBookingIdQuery, (err, results) => {
-          if (err) {
-            console.error('Error getting booking_id:', err);
-            return res.status(500).json({ error: 'Internal Server Error' });
-          }
+        const nextBookingId = result[0].next_booking_id;
 
-          const newBookingId = results[0].booking_id;
-          console.log('New Booking ID:', newBookingId);
-
-          db.query(dropTempBookingTableQuery, (err) => {
+        // Insert data into booking_renting directly with the next booking_id
+        db.query(
+          'INSERT INTO booking_renting (booking_id, room_num, hotel_id, chain, customer_SSN, is_renting) VALUES (?, ?, ?, ?, ?, ?)',
+          [nextBookingId, room_num, hotel_id, chain, customer_SSN, 'active'],
+          (err) => {
             if (err) {
-              console.error('Error dropping temporary table:', err);
+              console.error('Error inserting into booking_renting:', err);
               return res.status(500).json({ error: 'Internal Server Error' });
             }
 
             // Call InsertBookingDates procedure
             db.query(
               'CALL InsertBookingDates(?, ?, ?, ?, ?)',
-              [newBookingId, hotel_id, chain, startDate, endDate],
+              [nextBookingId, hotel_id, chain, startDate, endDate],
               (err) => {
                 if (err) {
                   console.error('Error executing MySQL query:', err);
                   return res.status(500).json({ error: 'Internal Server Error' });
                 }
 
-                res.status(200).json({ message: 'Booking created successfully', newBookingId });
+                // Send the booking ID to the frontend
+                res.status(200).json({ message: 'Booking created successfully', newBookingId: nextBookingId });
               }
             );
-          });
-        });
-      });
-    });
+          }
+        );
+      }
+    );
   });
+});
+
+//create direct booking
+app.post('/createDirectBooking', (req, res) => {
+  const { room_num, hotel_id, chain, customer_SSN, startDate, endDate, cc_number, exp_date, ccv } = req.body;
+
+  // Get the next available booking_id
+  db.query(
+    'SELECT IFNULL(MAX(booking_id), 0) + 1 AS next_booking_id FROM booking_renting WHERE hotel_id = ? AND chain = ?',
+    [hotel_id, chain],
+    (err, result) => {
+      if (err) {
+        console.error('Error getting next booking_id:', err);
+        return res.status(500).json({ error: 'Internal Server Error' });
+      }
+
+      const nextBookingId = result[0].next_booking_id;
+
+      // Insert data into booking_renting directly with the next booking_id
+      db.query(
+        'INSERT INTO booking_renting (booking_id, room_num, hotel_id, chain, customer_SSN, is_renting) VALUES (?, ?, ?, ?, ?, ?)',
+        [nextBookingId, room_num, hotel_id, chain, customer_SSN, 'renting'],
+        (err) => {
+          if (err) {
+            console.error('Error inserting into booking_renting:', err);
+            return res.status(500).json({ error: 'Internal Server Error' });
+          }
+
+          // Call InsertBookingDates procedure
+          db.query(
+            'CALL InsertBookingDates(?, ?, ?, ?, ?)',
+            [nextBookingId, hotel_id, chain, startDate, endDate],
+            (err) => {
+              if (err) {
+                console.error('Error executing MySQL query:', err);
+                return res.status(500).json({ error: 'Internal Server Error' });
+              }
+
+              // Update payment info
+              db.query(
+                'UPDATE booking_payment SET cc_number = ?, exp_date = ?, ccv = ? WHERE booking_id = ? AND hotel_id = ? AND chain = ?',
+                [cc_number, exp_date, ccv, nextBookingId, hotel_id, chain],
+                (err, result) => {
+                  if (err) {
+                    console.error('Error updating payment info:', err);
+                    return res.status(500).json({ error: 'Failed to update payment info.' });
+                  }
+
+                  // Send the booking ID to the frontend
+                  res.status(200).json({ message: 'Booking created successfully', newBookingId: nextBookingId });
+                }
+              );
+            }
+          );
+        }
+      );
+    }
+  );
 });
 
 
@@ -560,6 +588,25 @@ app.get('/available-rooms', (req, res) => {
 
     // Return the results
     res.json(results);
+  });
+});
+
+// Create a new customer endpoint
+app.post('/customers', (req, res) => {
+  const { SSN, name, address, registration_date, username, password } = req.body;
+
+  // Insert the new customer into the database
+  const sql = 'INSERT INTO customer (SSN, name, address, registration_date, username, password) VALUES (?, ?, ?, ?, ?, ?)';
+  const values = [SSN, name, address, registration_date, username, password];
+
+  db.query(sql, values, (err, result) => {
+    if (err) {
+      console.error('Error creating new customer:', err);
+      return res.status(500).json({ error: 'Failed to create customer' });
+    }
+
+    console.log('New customer created:', result.insertId);
+    res.status(201).json({ message: 'Customer created successfully', customerId: result.insertId });
   });
 });
 
