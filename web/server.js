@@ -241,6 +241,50 @@ app.post('/api/updateBookingStatus', (req, res) => {
   });
 });
 
+// Endpoint to retrieve customers at the employee's hotel
+app.get('/api/currentCustomers', (req, res) => {
+  const { employeeUsername } = req.query;
+
+  // Query to retrieve hotel information where the employee works
+  const employeeHotelQuery = `
+      SELECT hotel_id, chain
+      FROM employee
+      WHERE username = ?
+  `;
+
+  db.query(employeeHotelQuery, [employeeUsername], (err, results) => {
+      if (err) {
+          console.error('Error fetching employee hotel information:', err);
+          return res.status(500).json({ error: 'Failed to fetch employee hotel information' });
+      }
+
+      if (results.length === 0) {
+          return res.status(404).json({ error: 'Employee not found' });
+      }
+
+      const { hotel_id, chain } = results[0];
+
+      // Query to retrieve customers at the employee's hotel
+      const customerQuery = `
+          SELECT c.*, e.username
+          FROM customer c
+          JOIN booking_renting br ON c.SSN = br.customer_SSN
+          JOIN employee e ON br.hotel_id = e.hotel_id AND br.chain = e.chain
+          WHERE e.username = ?
+      `;
+
+      db.query(customerQuery, [employeeUsername], (err, customerResults) => {
+          if (err) {
+              console.error('Error fetching customers:', err);
+              return res.status(500).json({ error: 'Failed to fetch customers' });
+          }
+          res.json(customerResults);
+      });
+  });
+});
+
+
+
 //login api endpoint
 app.post('/login', (req, res) => {
   const { userType, username, password } = req.body;
