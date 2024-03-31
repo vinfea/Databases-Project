@@ -379,19 +379,17 @@ app.post('/createBooking', (req, res) => {
 
     // Create temporary table with booking data
     const createTempBookingTableQuery = `
-      CREATE TEMPORARY TABLE temp_booking AS
-      SELECT
-        (SELECT MAX(booking_id) 
-         FROM booking_renting
-         WHERE hotel_id = ? AND chain = ?) + 1 AS booking_id, 
-        ? AS room_num,
-        ? AS hotel_id,
-        ? AS chain,
-        ? AS customer_SSN,
-        'active' AS is_renting
-      FROM customer c
-      WHERE c.username = ?;
-    `;
+    CREATE TEMPORARY TABLE temp_booking AS
+    SELECT
+      IFNULL((SELECT MAX(booking_id) FROM booking_renting WHERE hotel_id = ? AND chain = ?), 0) + 1 AS booking_id, 
+      ? AS room_num,
+      ? AS hotel_id,
+      ? AS chain,
+      ? AS customer_SSN,
+      'active' AS is_renting
+    FROM customer c
+    WHERE c.username = ?;
+  `;
 
     // Insert data into booking_renting
     const insertIntoBookingRentingQuery = `
