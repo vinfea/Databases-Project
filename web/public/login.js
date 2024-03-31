@@ -23,7 +23,7 @@ $(document).ready(function() {
             },
             error: function(xhr, status, error) {
                 console.error(xhr.responseText);
-                // Handle error response, e.g., show error message
+                alert(xhr.responseText); 
             }
         });
     });

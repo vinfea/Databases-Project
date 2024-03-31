@@ -69,13 +69,34 @@
           html += '<p>No rooms available for the specified criteria.</p>';
         } else {
           html += '<table border="1">';
-          html += '<tr><th>Room Number</th><th>Price</th><th>Capacity</th><th>View</th></tr>';
+          html += '<tr><th>Room Number</th><th>Price</th><th>Capacity</th><th>View</th><th>Actions</th></tr>';
           rooms.forEach(room => {
-            html += `<tr><td>${room.room_num}</td><td>$${room.price}</td><td>${room.capacity}</td><td>${room.view}</td></tr>`;
+            html += `<tr>
+                        <td>${room.room_num}</td>
+                        <td>$${room.price}</td>
+                        <td>${room.capacity}</td>
+                        <td>${room.view}</td>
+                        <td><button class="book-btn" data-room="${room.room_num}" data-hotel="${room.hotel_id}" data-chain="${room.chain}" data-start="${formData.get('startDate')}" data-end="${formData.get('endDate')}">Book</button></td>
+                    </tr>`;
           });
           html += '</table>';
         }
         resultsDiv.innerHTML = html;
+
+        // Add event listener to Book buttons
+        const bookButtons = document.querySelectorAll('.book-btn');
+        bookButtons.forEach(button => {
+          button.addEventListener('click', () => {
+            const roomNum = button.getAttribute('data-room');
+            const hotelId = button.getAttribute('data-hotel');
+            const chain = button.getAttribute('data-chain');
+            const startDate = button.getAttribute('data-start');
+            const endDate = button.getAttribute('data-end');
+
+            // Redirect to direct booking form with pre-filled room details
+            window.location.href = `/directBooking.html?room_num=${roomNum}&hotel_id=${hotelId}&chain=${chain}&startDate=${startDate}&endDate=${endDate}`;
+          });
+        });
       } catch (error) {
         console.error('Error fetching available rooms:', error);
         resultsDiv.innerHTML = '<p>Failed to fetch available rooms. Please try again later.</p>';

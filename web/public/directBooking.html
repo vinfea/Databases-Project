@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Book Room</title>
+</head>
+<body>
+  <h1>Book Room</h1>
+
+  <form id="bookingForm">
+    <input type="hidden" id="roomNum" name="room_num">
+    <input type="hidden" id="hotelId" name="hotel_id">
+    <input type="hidden" id="chain" name="chain">
+    <input type="hidden" id="startDate" name="startDate">
+    <input type="hidden" id="endDate" name="endDate">
+
+    <label for="SSN">SSN:</label>
+    <input type="text" id="SSN" name="SSN" required><br><br>
+
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" required><br><br>
+
+    <label for="address">Address:</label>
+    <input type="text" id="address" name="address" required><br><br>
+
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" required><br><br>
+
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required><br><br>
+
+    <label for="cc_number">Credit Card Number:</label>
+    <input type="text" id="cc_number" name="cc_number" required><br><br>
+
+    <label for="exp_date">Expiration Date:</label>
+    <input type="date" id="exp_date" name="exp_date" required><br><br>
+
+    <label for="ccv">CCV:</label>
+    <input type="text" id="ccv" name="ccv" required><br><br>
+
+    <button type="submit">Book Room</button>
+  </form>
+
+  <div id="message"></div>
+  <br>
+  <a href="menu.html">Return to Menu</a>
+
+  <script>
+    const form = document.getElementById('bookingForm');
+    const messageDiv = document.getElementById('message');
+
+    // Fill in form fields with parameters from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const roomNum = urlParams.get('room_num');
+    const hotelId = urlParams.get('hotel_id');
+    const chain = urlParams.get('chain');
+    const startDate = urlParams.get('startDate');
+    const endDate = urlParams.get('endDate');
+
+    document.getElementById('roomNum').value = roomNum;
+    document.getElementById('hotelId').value = hotelId;
+    document.getElementById('chain').value = chain;
+    document.getElementById('startDate').value = startDate;
+    document.getElementById('endDate').value = endDate;
+
+    form.addEventListener('submit', async function(event) {
+      event.preventDefault();
+
+      const formData = new FormData(form);
+      const requestBody = Object.fromEntries(formData.entries());
+
+      try {
+        // Create new customer
+        const customerResponse = await fetch('/customers', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(requestBody)
+        });
+
+        if (!customerResponse.ok) {
+          throw new Error('Failed to create customer');
+        }
+
+        const customerData = await customerResponse.json();
+        const { SSN } = customerData;
+        console.log('Customer created with SSN:', SSN);
+
+        // Update booking data with customer SSN
+        requestBody.customer_SSN = SSN;
+
+        // Create direct booking
+        const bookingResponse = await fetch('/createDirectBooking', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(requestBody)
+        });
+
+        if (!bookingResponse.ok) {
+          throw new Error('Failed to create booking');
+        }
+
+        const bookingData = await bookingResponse.json();
+        const { newBookingId } = bookingData;
+
+        // Display success message
+        messageDiv.innerHTML = `<p>Booking created successfully! Your booking ID is: ${newBookingId}</p>`;
+      } catch (error) {
+        console.error('Error creating booking:', error);
+        messageDiv.innerHTML = '<p>Failed to create booking. Please try again later.</p>';
+      }
+    });
+  </script>
+</body>
+</html>
