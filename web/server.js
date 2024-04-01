@@ -79,8 +79,74 @@ app.get('/deleteHotel.html', (req, res) => {
   res.sendFile(__dirname + '/public/deleteHotel.html');
 });
 
+app.get('/deleteRooms.html', (req, res) => {
+  res.sendFile(__dirname + '/public/deleteRooms.html');
+});
+
+app.get('/createRooms.html', (req, res) => { 
+  res.sendFile(__dirname + '/public/createRooms.html');
+});
+
 // SET UP ENDPOINTS FOR CRUD APIS ----------------------------------------------
 //get all the available rooms in the city
+
+app.delete('/api/deleteRoom', (req, res) => {
+  const { room_num, hotel_id, chain } = req.body;
+
+  // Validate required fields
+  if (!room_num || !hotel_id || !chain) {
+    return res.status(400).json({ error: 'Missing required fields' });
+  }
+
+  // Prepare SQL statement to delete the room
+  const sql = `
+    DELETE FROM room
+    WHERE room_num = ? AND hotel_id = ? AND chain = ?
+  `;
+
+  // Execute the SQL query with parameters
+  db.query(sql, [room_num, hotel_id, chain], (err, result) => {
+    if (err) {
+      console.error('Error deleting room:', err);
+      return res.status(500).json({ error: 'Failed to delete room' });
+    }
+
+    if (result.affectedRows === 0) {
+      // Room not found
+      return res.status(404).json({ error: 'Room not found' });
+    }
+
+    // Room deleted successfully
+    res.status(200).json({ message: 'Room deleted successfully' });
+  });
+});
+
+app.post('/api/createRoom', (req, res) => {
+  const { room_num, hotel_id, chain, price, capacity, view, extendible } = req.body;
+
+  // Validate required fields
+  if (!room_num || !hotel_id || !chain || !price || !capacity || !view || !extendible) {
+    return res.status(400).json({ error: 'Missing required fields' });
+  }
+
+  // Prepare SQL statement to insert the room
+  const sql = `
+    INSERT INTO room (room_num, hotel_id, chain, price, capacity, view, extendible)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+  `;
+
+  // Execute the SQL query with parameters
+  db.query(sql, [room_num, hotel_id, chain, price, capacity, view, extendible], (err, result) => {
+    if (err) {
+      console.error('Error creating room:', err);
+      return res.status(500).json({ error: 'Failed to create room' });
+    }
+
+    console.log(`Room created with ID: ${result.insertId}`);
+    res.status(201).json({ message: 'Room created successfully', room_id: result.insertId });
+  });
+});
+
 app.get('/api/available-rooms-per-city', (req, res) => {
   const sql = 'SELECT * FROM available_rooms_per_city';
   db.query(sql, (err, result) => {

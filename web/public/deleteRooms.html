@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Delete Room</title>
+</head>
+<body>
+    <h1>Delete Room</h1>
+    <form id="deleteRoomForm">
+        <label for="roomNum">Room Number:</label>
+        <input type="text" id="roomNum" name="roomNum" required><br><br>
+
+        <label for="hotelId">Hotel ID:</label>
+        <input type="text" id="hotelId" name="hotelId" required><br><br>
+
+        <label for="chainSelect">Select Chain:</label>
+        <select id="chainSelect" name="chain">
+            <option value="">Select Chain</option>
+            <option value="Grand Hotels">Grand Hotels</option>
+            <option value="Royal Resorts">Royal Resorts</option>
+            <option value="Ritz-Carlton">Ritz-Carlton</option>
+            <option value="Independence Inn">Independence Inn</option>
+            <option value="Dragonfly Inn">Dragonfly Inn</option>
+        </select>
+        <br><br>
+
+        <button type="submit">Delete Room</button>
+    </form>
+
+    <div id="deleteMessage"></div>
+
+    <script>
+        const deleteRoomForm = document.getElementById("deleteRoomForm");
+        const deleteMessage = document.getElementById("deleteMessage");
+
+        deleteRoomForm.addEventListener("submit", async (event) => {
+            event.preventDefault();
+
+            const roomNum = document.getElementById("roomNum").value;
+            const hotelId = document.getElementById("hotelId").value;
+            const chainSelect = document.getElementById("chainSelect");
+            const chain = chainSelect.options[chainSelect.selectedIndex].value;
+
+            const requestOptions = {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ room_num: roomNum, hotel_id: hotelId, chain: chain })
+            };
+
+            try {
+                const response = await fetch("/api/deleteRoom", requestOptions);
+                const data = await response.json();
+
+                if (response.ok) {
+                    deleteMessage.textContent = data.message;
+                    deleteMessage.style.color = "green";
+                } else {
+                    deleteMessage.textContent = data.error || "Failed to delete room.";
+                    deleteMessage.style.color = "red";
+                }
+            } catch (error) {
+                console.error("Error deleting room:", error);
+                deleteMessage.textContent = "Failed to delete room. Please try again.";
+                deleteMessage.style.color = "red";
+            }
+        });
+    </script>
+</body>
+</html>
