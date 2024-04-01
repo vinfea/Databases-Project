@@ -95,7 +95,31 @@ app.get('/viewEmployees.html', (req, res) => {
   res.sendFile(__dirname + '/public/viewEmployees.html');
 });
 
+app.get('/updateHotelNumber.html', (req, res) => {  
+  res.sendFile(__dirname + '/public/updateHotelNumber.html');
+});
+
 // SET UP ENDPOINTS FOR CRUD APIS ----------------------------------------------
+// Endpoint to update hotel phone number
+app.post('/api/updateHotelPhone', async (req, res) => {
+  const { hotel_id, chain, new_phone_num } = req.body;
+
+  try {
+      // Update the phone number in 'hotel_phone' table
+      const updatePhoneQuery = `
+          UPDATE hotel_phone
+          SET phone_num = ?
+          WHERE hotel_id = ? AND chain = ?
+      `;
+      const updatePhoneValues = [new_phone_num, hotel_id, chain];
+      await db.query(updatePhoneQuery, updatePhoneValues);
+
+      res.status(200).json({ message: 'Hotel phone number updated successfully' });
+  } catch (error) {
+      console.error('Error:', error);
+      res.status(500).json({ error: 'Failed to update hotel phone number' });
+  }
+});
 
 app.get('/api/employees', (req, res) => {
   const { chain, hotel_id } = req.query;

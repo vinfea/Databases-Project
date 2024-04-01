@@ -21,6 +21,7 @@
         <li id="employeeBookingsOption1"><a href="currentCustomers.html">Current Customers</a></li>
         <li><a href=viewAllHotels.html>View All Hotels</a></li>
         <li id ="createHotelLink"><a href="createHotel.html">Create New Hotel</a></li>
+        <li id="updateHotelNum"><a href="updateHotelNumber.html">Update Hotel Number</a></li>
         <li id="deleteHotelLink"><a href="deleteHotel.html">Delete Hotel</a></li>
         <li id ="createRooms"><a href="createRooms.html">Create Rooms</a></li>
         <li id = "deleteRooms"><a href="deleteRooms.html">Delete Room</a></li>
@@ -98,6 +99,11 @@
             const viewEmployees = document.getElementById('viewEmployees');
             if (viewEmployees) {
                 viewEmployees.style.display = 'none';
+            }
+
+            const updateHoteNum = document.getElementById('updateHotelNum');
+            if (updateHoteNum) {
+                updateHoteNum.style.display = 'none';
             }
 
         } else if (role === 'employee') {
