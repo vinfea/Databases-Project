@@ -20,8 +20,8 @@
         <li id="employeeBookingsOption"><a href="employeeBookings.html">See Customer Bookings</a></li>
         <li id="employeeBookingsOption1"><a href="currentCustomers.html">Current Customers</a></li>
         <li><a href=viewAllHotels.html>View All Hotels</a></li>
-        <li><a href="createHotel.html">Create New Hotel</a></li>
-        <li><a href="deleteHotel.html">Delete Hotel</a></li>
+        <li id ="createHotelLink"><a href="createHotel.html">Create New Hotel</a></li>
+        <li id="deleteHotelLink"><a href="deleteHotel.html">Delete Hotel</a></li>
         <li id="employeeBookingsOption2"><a href="employeeAvailableRooms.html">Customer Direct Booking</a></li>  
         <li><a href="#" id="logout">Logout</a></li>  
 
@@ -54,22 +54,32 @@
             if (employeeBookingsOption1) {
                 employeeBookingsOption1.style.display = 'none';
             }
+
             const employeeBookingsOption2 = document.getElementById('employeeBookingsOption2');
             if (employeeBookingsOption2) {
                 employeeBookingsOption2.style.display = 'none';
             }
-            
+
+            const createHotelLink = document.getElementById('createHotelLink');
+            if (createHotelLink) {
+                createHotelLink.style.display = 'none';
+            }
+
+            const deleteHotelLink = document.getElementById('deleteHotelLink');
+            if (deleteHotelLink) {
+                deleteHotelLink.style.display = 'none';
+            }
         } else if (role === 'employee') {
             // Hide customer-specific options
             const customerBookingsOption = document.getElementById('customerBookingsOption');
             if (customerBookingsOption) {
                 customerBookingsOption.style.display = 'none';
             }
+
             const customerBookingsOption1 = document.getElementById('customerBookingsOption1');
             if (customerBookingsOption1) {
                 customerBookingsOption1.style.display = 'none';
             }
-
         }
     }
 
