@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Employee</title>
+</head>
+<body>
+    <h1>Add Employee</h1>
+    <form id="addEmployeeForm">
+        <label for="SSN">SSN:</label>
+        <input type="text" id="SSN" name="SSN" required><br><br>
+
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required><br><br>
+
+        <label for="address">Address:</label>
+        <input type="text" id="address" name="address" required><br><br>
+
+        <label for="hotelId">Hotel ID:</label>
+        <input type="text" id="hotelId" name="hotel_id" required><br><br>
+
+        <label for="chain">Chain:</label>
+        <select id="chain" name="chain" required>
+            <option value="">Select Chain</option>
+            <option value="Grand Hotels">Grand Hotels</option>
+            <option value="Royal Resorts">Royal Resorts</option>
+            <option value="Ritz-Carlton">Ritz-Carlton</option>
+            <option value="Independence Inn">Independence Inn</option>
+            <option value="Dragonfly Inn">Dragonfly Inn</option>
+        </select><br><br>
+
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required><br><br>
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required><br><br>
+
+        <button type="submit">Add Employee</button>
+    </form>
+
+    <div id="message"></div>
+
+    <script>
+        const addEmployeeForm = document.getElementById('addEmployeeForm');
+        const messageDiv = document.getElementById('message');
+
+        addEmployeeForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const formData = new FormData(addEmployeeForm);
+            const jsonData = {};
+            formData.forEach((value, key) => {
+                jsonData[key] = value;
+            });
+
+            try {
+                const response = await fetch('/api/addEmployee', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(jsonData)
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    messageDiv.textContent = data.message;
+                    messageDiv.style.color = 'green';
+                } else {
+                    messageDiv.textContent = data.error || 'Failed to add employee';
+                    messageDiv.style.color = 'red';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                messageDiv.textContent = 'Failed to add employee';
+                messageDiv.style.color = 'red';
+            }
+        });
+    </script>
+</body>
+</html>

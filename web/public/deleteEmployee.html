@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Delete Employee</title>
+</head>
+<body>
+    <h1>Delete Employee</h1>
+    <form id="deleteEmployeeForm">
+        <label for="SSN">Employee SSN:</label>
+        <input type="text" id="SSN" name="SSN" required><br><br>
+
+        <button type="submit">Delete Employee</button>
+    </form>
+
+    <div id="message"></div>
+
+    <script>
+        const deleteEmployeeForm = document.getElementById('deleteEmployeeForm');
+        const messageDiv = document.getElementById('message');
+
+        deleteEmployeeForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const formData = new FormData(deleteEmployeeForm);
+            const jsonData = {};
+            formData.forEach((value, key) => {
+                jsonData[key] = value;
+            });
+
+            try {
+                const response = await fetch('/api/deleteEmployee', {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(jsonData)
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    messageDiv.textContent = data.message;
+                    messageDiv.style.color = 'green';
+                } else {
+                    messageDiv.textContent = data.error || 'Failed to delete employee';
+                    messageDiv.style.color = 'red';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                messageDiv.textContent = 'Failed to delete employee';
+                messageDiv.style.color = 'red';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -87,8 +87,92 @@ app.get('/createRooms.html', (req, res) => {
   res.sendFile(__dirname + '/public/createRooms.html');
 });
 
+app.get('/deleteEmployee.html', (req, res) => {
+  res.sendFile(__dirname + '/public/deleteEmployee.html');
+});
+
+app.get('/viewEmployees.html', (req, res) => {
+  res.sendFile(__dirname + '/public/viewEmployees.html');
+});
+
 // SET UP ENDPOINTS FOR CRUD APIS ----------------------------------------------
-//get all the available rooms in the city
+
+app.get('/api/employees', (req, res) => {
+  const { chain, hotel_id } = req.query;
+
+  if (!chain || !hotel_id) {
+    return res.status(400).json({ error: 'Chain and hotel_id are required' });
+  }
+
+  // Query to fetch employees
+  const sql = `SELECT * FROM employee WHERE chain = ? AND hotel_id = ?`;
+
+  db.query(sql, [chain, hotel_id], (err, results) => {
+    if (err) {
+      console.error('Error fetching employees:', err);
+      return res.status(500).json({ error: 'Failed to fetch employees' });
+    }
+
+    res.json(results);
+  });
+});
+
+app.post('/api/addEmployee', (req, res) => {
+  const { SSN, name, address, hotel_id, chain, username, password } = req.body;
+
+  // Validate required fields
+  if (!SSN || !name || !address || !hotel_id || !chain || !username || !password) {
+    return res.status(400).json({ error: 'Missing required fields' });
+  }
+
+  // Prepare SQL statement to insert the employee
+  const sql = `
+    INSERT INTO employee (SSN, name, address, hotel_id, chain, username, password)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+  `;
+
+  // Execute the SQL query with parameters
+  db.query(sql, [SSN, name, address, hotel_id, chain, username, password], (err, result) => {
+    if (err) {
+      console.error('Error adding employee:', err);
+      return res.status(500).json({ error: 'Failed to add employee' });
+    }
+
+    console.log(`Employee added with SSN: ${SSN}`);
+    res.status(201).json({ message: 'Employee added successfully', SSN });
+  });
+});
+
+app.delete('/api/deleteEmployee', (req, res) => {
+  const { SSN } = req.body;
+
+  // Validate required fields
+  if (!SSN) {
+    return res.status(400).json({ error: 'Missing required fields' });
+  }
+
+  // Prepare SQL statement to delete the employee
+  const sql = `
+    DELETE FROM employee
+    WHERE SSN = ?
+  `;
+
+  // Execute the SQL query with parameters
+  db.query(sql, [SSN], (err, result) => {
+    if (err) {
+      console.error('Error deleting employee:', err);
+      return res.status(500).json({ error: 'Failed to delete employee' });
+    }
+
+    if (result.affectedRows === 0) {
+      // Employee not found
+      return res.status(404).json({ error: 'Employee not found' });
+    }
+
+    // Employee deleted successfully
+    res.status(200).json({ message: 'Employee deleted successfully' });
+  });
+});
 
 app.delete('/api/deleteRoom', (req, res) => {
   const { room_num, hotel_id, chain } = req.body;

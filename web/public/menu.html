@@ -22,8 +22,11 @@
         <li><a href=viewAllHotels.html>View All Hotels</a></li>
         <li id ="createHotelLink"><a href="createHotel.html">Create New Hotel</a></li>
         <li id="deleteHotelLink"><a href="deleteHotel.html">Delete Hotel</a></li>
-        <li><a href="createRooms.html">Create Rooms</a></li>
-        <li><a href="deleteRooms.html">Delete Room</a></li>
+        <li id ="createRooms"><a href="createRooms.html">Create Rooms</a></li>
+        <li id = "deleteRooms"><a href="deleteRooms.html">Delete Room</a></li>
+        <li id = "createEmployees"><a href="createEmployee.html">Create Employee</a></li>
+        <li id = "deleteEmployees"><a href="deleteEmployee.html">Delete Employee</a></li>
+        <li id = "viewEmployees"><a href="viewEmployees.html">View Employees</a></li>
         <li id="employeeBookingsOption2"><a href="employeeAvailableRooms.html">Customer Direct Booking</a></li>  
         <li><a href="#" id="logout">Logout</a></li>  
 
@@ -71,6 +74,32 @@
             if (deleteHotelLink) {
                 deleteHotelLink.style.display = 'none';
             }
+
+            const createRooms = document.getElementById('createRooms');
+            if (createRooms) {
+                createRooms.style.display = 'none';
+            }
+
+            const deleteRooms = document.getElementById('deleteRooms');
+            if (deleteRooms) {
+                deleteRooms.style.display = 'none';
+            }
+
+            const createEmployees = document.getElementById('createEmployees');
+            if (createEmployees) {
+                createEmployees.style.display = 'none';
+            }
+
+            const deleteEmployees = document.getElementById('deleteEmployees');
+            if (deleteEmployees) {
+                deleteEmployees.style.display = 'none';
+            }
+
+            const viewEmployees = document.getElementById('viewEmployees');
+            if (viewEmployees) {
+                viewEmployees.style.display = 'none';
+            }
+
         } else if (role === 'employee') {
             // Hide customer-specific options
             const customerBookingsOption = document.getElementById('customerBookingsOption');
