@@ -22,7 +22,6 @@
   <h1>Customer Bookings</h1>
 
   <div id="bookingsContainer">
-    <!-- Bookings will be displayed here -->
   </div>
 
   <script>
@@ -85,7 +84,7 @@
 
     // Function to cancel booking
     function cancelBooking(booking_id, hotel_id, chain) {
-      const url = 'http://localhost:3000/cancelBooking'; //see if this actually replaces the right link
+      const url = 'http://localhost:3000/cancelBooking'; 
       const data = {
         booking_id: booking_id,
         hotel_id: hotel_id,

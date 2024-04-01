@@ -21,7 +21,6 @@
 <body>
     <h1>See Customer Bookings</h1>
     <div id="bookingsContainer">
-        <!-- Bookings will be displayed here -->
     </div>
 
     <script>
@@ -126,7 +125,7 @@
             if (confirm('Are you sure you want to delete this booking?')) {
                 // Send request to backend API to delete booking
                 fetch('/api/deleteBooking', {
-                    method: 'DELETE', // Change method to DELETE
+                    method: 'DELETE', 
                     headers: {
                         'Content-Type': 'application/json',
                     },

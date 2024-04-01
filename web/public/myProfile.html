@@ -6,8 +6,8 @@
 </head>
 <body>
     <h1>Edit Profile</h1>
-    <div id="usernameDisplay"></div> <!-- Added display for username -->
-    <div id="roleDisplay"></div> <!-- Added display for role -->
+    <div id="usernameDisplay"></div> 
+    <div id="roleDisplay"></div> 
     <form id="profileForm">
         <!-- Common fields for both customers and employees -->
         <label for="name">Name:</label>
@@ -40,10 +40,10 @@
                 if (!response.ok) {
                     throw new Error('Failed to fetch profile data');
                 }
-                const userData = await response.text(); // Changed from .json() to .text()
+                const userData = await response.text(); 
 
                 // Update the profile section with the HTML received from the backend
-                document.body.innerHTML += userData; // Append HTML to the body
+                document.body.innerHTML += userData; 
 
                 // Populate name and address fields from the received data
                 const nameInput = document.getElementById('name');
@@ -96,7 +96,6 @@
                 const data = await response.json(); // Parse response data
                 updateMessage.textContent = data.message; // Display success message
                 updateMessage.style.color = 'green'; // Set success message color
-                // Optionally, reset form fields or perform other actions after successful update
             } catch (error) {
                 console.error('Error updating profile:', error);
                 updateMessage.textContent = 'Failed to update profile. Please try again later.'; // Display error message
