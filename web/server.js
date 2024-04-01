@@ -71,6 +71,10 @@ app.get('/directBooking.html', (req, res) => {
   res.sendFile(__dirname + '/public/directBooking.html');
 });
 
+app.get('/createHotel.html', (req, res) => {  
+  res.sendFile(__dirname + '/public/createHotel.html');
+});
+
 // SET UP ENDPOINTS FOR CRUD APIS ----------------------------------------------
 //get all the available rooms in the city
 app.get('/api/available-rooms-per-city', (req, res) => {
@@ -691,6 +695,32 @@ app.post('/api/updateProfile', (req, res) => {
       return res.status(500).json({ error: 'Failed to update profile' });
     }
     return res.status(200).json({ message: 'Profile updated successfully' });
+  });
+});
+
+//create new hotel
+app.post('/api/hotel', (req, res) => {
+  const { hotel_id, chain, num_rooms, address, email, rating, manager_SSN } = req.body;
+
+  // Validate required fields
+  if (!hotel_id || !chain || !num_rooms || !address || !email || !rating || !manager_SSN) {
+    return res.status(400).json({ error: 'Missing required fields' });
+  }
+
+  // Prepare SQL statement
+  const sql = `
+    INSERT INTO hotel (hotel_id, chain, num_rooms, address, email, rating, manager_SSN)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+  `;
+
+  // Execute the SQL query with parameters
+  db.query(sql, [hotel_id, chain, num_rooms, address, email, rating, manager_SSN], function (err) {
+    if (err) {
+      console.error(err.message);
+      return res.status(500).json({ error: 'Failed to create hotel' });
+    }
+    console.log(`A new hotel has been added with ID: ${hotel_id}`);
+    res.status(201).json({ message: 'Hotel created successfully', hotel_id });
   });
 });
 
