@@ -75,6 +75,10 @@ app.get('/createHotel.html', (req, res) => {
   res.sendFile(__dirname + '/public/createHotel.html');
 });
 
+app.get('/deleteHotel.html', (req, res) => {
+  res.sendFile(__dirname + '/public/deleteHotel.html');
+});
+
 // SET UP ENDPOINTS FOR CRUD APIS ----------------------------------------------
 //get all the available rooms in the city
 app.get('/api/available-rooms-per-city', (req, res) => {
@@ -724,7 +728,7 @@ app.post('/api/hotel', (req, res) => {
   });
 });
 
-
+//view hotels
 app.post('/api/hotels', (req, res) => {
   // SQL query to select hotel information including rating
   const query = `
@@ -743,4 +747,32 @@ app.post('/api/hotels', (req, res) => {
       res.json(results); // Send hotel data as JSON response
   });
 });
+
+//delete hotel function
+app.delete('/api/hotels/:hotel_id/:chain', (req, res) => {
+  const { hotel_id, chain } = req.params;
+
+  // Check if hotel_id and chain are provided
+  if (!hotel_id || !chain) {
+    return res.status(400).json({ error: 'Hotel ID and Chain are required' });
+  }
+
+  // Delete hotel from database
+  const sql = 'DELETE FROM hotel WHERE hotel_id = ? AND chain = ?';
+  db.query(sql, [hotel_id, chain], (err, result) => {
+    if (err) {
+      console.error(err.message);
+      return res.status(500).json({ error: 'Failed to delete hotel' });
+    }
+
+    // Check if any row was affected
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Hotel not found' });
+    }
+
+    console.log(`Hotel with ID ${hotel_id} in chain ${chain} has been deleted`);
+    res.status(200).json({ message: 'Hotel deleted successfully' });
+  });
+});
+
 

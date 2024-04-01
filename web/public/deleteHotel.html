@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Delete Hotel</title>
+</head>
+<body>
+  <h1>Delete Hotel</h1>
+  <form id="deleteHotelForm">
+    <label for="hotel_id">Hotel ID:</label>
+    <input type="text" id="hotel_id" name="hotel_id" required><br><br>
+    
+    <label for="chain">Chain:</label>
+    <select id="chain" name="chain" required>
+        <option value="">Select Chain</option>
+        <option value="Grand Hotels">Grand Hotels</option>
+        <option value="Royal Resorts">Royal Resorts</option>
+        <option value="Ritz-Carlton">Ritz-Carlton</option>
+        <option value="Independence Inn">Independence Inn</option>
+        <option value="Dragonfly Inn">Dragonfly Inn</option>
+    </select><br><br>
+    
+    <input type="submit" value="Delete Hotel">
+  </form>
+
+  <div id="message"></div>
+
+  <script>
+    const form = document.getElementById('deleteHotelForm');
+    const messageDiv = document.getElementById('message');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const hotelId = document.getElementById('hotel_id').value;
+      const chain = document.getElementById('chain').value;
+
+      const response = await fetch(`/api/hotels/${hotelId}/${chain}`, {
+        method: 'DELETE'
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        messageDiv.innerHTML = `<p>${result.message}</p>`;
+      } else {
+        messageDiv.innerHTML = `<p>Error: ${result.error}</p>`;
+      }
+    });
+  </script>
+</body>
+</html>
