@@ -664,9 +664,11 @@ app.get('/api/profile', (req, res) => {
 
 // Route to handle updating user profile
 app.post('/api/updateProfile', (req, res) => {
-  const { name, address, hotelId, chain, username, role } = req.body;
+  const { name, address, username, role } = req.body;
 
+  console.log('Updating profile:', req.body);
   // Check if username and role are provided
+
   if (!username || !role) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
@@ -677,8 +679,8 @@ app.post('/api/updateProfile', (req, res) => {
     updateQuery = 'UPDATE customer SET name = ?, address = ? WHERE username = ?';
     updateParams = [name, address, username];
   } else if (role === 'employee') {
-    updateQuery = 'UPDATE employee SET name = ?, address = ?, hotel_id = ?, chain = ? WHERE username = ?';
-    updateParams = [name, address, hotelId, chain, username];
+    updateQuery = 'UPDATE employee SET name = ?, address = ? WHERE username = ?';
+    updateParams = [name, address, username];
   } else {
     return res.status(400).json({ error: 'Invalid role' });
   }
